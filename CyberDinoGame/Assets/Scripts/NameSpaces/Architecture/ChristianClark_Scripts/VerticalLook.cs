@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Architecture.Input;
 
 public class VerticalLook : MonoBehaviour {
 
@@ -12,14 +13,22 @@ public class VerticalLook : MonoBehaviour {
 	void Start () {
         Cursor.lockState = CursorLockMode.Locked;
 	}
-	
-	// Update is called once per frame
-	void Update () {
-        Vector3 rot = transform.localRotation.eulerAngles;
-        rot.x += -MappedInput.allDevices.GetAxis(MappedAxis.LookVertical) * lookSpeed * Time.deltaTime;
-        if (rot.x > 180) rot.x -= 360;
-        rot.x = Mathf.Clamp(rot.x, upperLimit, lowerLimit);
-        transform.localRotation = Quaternion.Euler(rot);
 
+    void OnEnable() {
+        InputListener.Axis2DInput += OnAxis2DInput;
+    }
+
+    void OnDisable() {
+        InputListener.Axis2DInput -= OnAxis2DInput;
+    }
+
+    void OnAxis2DInput(Axis2D axis2D, float horizontal, float vertical) {
+        if (axis2D == Axis2D.Look) {
+            Vector3 rot = transform.localRotation.eulerAngles;
+            rot.x += -vertical * lookSpeed * Time.deltaTime;
+            if (rot.x > 180) rot.x -= 360;
+            rot.x = Mathf.Clamp(rot.x, upperLimit, lowerLimit);
+            transform.localRotation = Quaternion.Euler(rot);
+        }
     }
 }

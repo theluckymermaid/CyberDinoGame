@@ -50,7 +50,7 @@ public class PrototypeDino : MonoBehaviour {
                 break;
             case Button.ButtonFire:
                 if (buttonState == ButtonState.Held && (Time.time - lastFired > fireRate)) {
-                    PrototypeBullet bullet = Instantiate(bulletPrefab, bulletSpawnPoint.position, bulletSpawnPoint.rotation, dynamicObjectsTransform).GetComponent<PrototypeBullet>();
+                    PrototypeBullet bullet = (Instantiate(bulletPrefab, bulletSpawnPoint.position, bulletSpawnPoint.rotation, dynamicObjectsTransform) as GameObject).GetComponent<PrototypeBullet>();
                     bullet.owner = this.transform;
                     lastFired = Time.time;
                 }
@@ -107,22 +107,20 @@ public class PrototypeDino : MonoBehaviour {
 
     void OnControllerColliderHit(ControllerColliderHit hit) {
 
-        if ((characterController.collisionFlags & CollisionFlags.Below) != 0) {
-            float angle = Vector3.Angle(hit.normal, Vector3.up);
-            slideVelocity = Vector3.zero;
+        if (isActiveAndEnabled) {
+            if ((characterController.collisionFlags & CollisionFlags.Below) != 0) {
+                float angle = Vector3.Angle(hit.normal, Vector3.up);
+                slideVelocity = Vector3.zero;
 
-            if (angle <= 10) {
-                Debug.Log("Angle less than 10!" + Time.time);
-            }
+                if (angle <= 10) {
+                    Debug.Log("Angle less than 10!" + Time.time);
+                }
 
-            if (angle < flattestFloorHitAngle) {
-                flattestFloorHitAngle = angle;
-                flattestFloorHitNormal = hit.normal;
+                if (angle < flattestFloorHitAngle) {
+                    flattestFloorHitAngle = angle;
+                    flattestFloorHitNormal = hit.normal;
+                }
             }
         }
-
-
-
-        
     }
 }

@@ -70,21 +70,23 @@ namespace Architecture.Input{
         }
 
         void Update() {
-            foreach (var button in Enum.GetValues(typeof(Button))) {
-                if (UnityEngine.Input.GetButtonDown(Enum.GetName(typeof(Button), button)))
-                    buttonInput((Button)button, ButtonState.Pressed);
-                if (UnityEngine.Input.GetButtonUp(Enum.GetName(typeof(Button), button)))
-                    buttonInput((Button)button, ButtonState.Released);
-                if (UnityEngine.Input.GetButton(Enum.GetName(typeof(Button), button)))
-                    buttonInput((Button)button, ButtonState.Held);
-            }
+            if (buttonInput != null)
+                foreach (var button in Enum.GetValues(typeof(Button))) {
+                    if (UnityEngine.Input.GetButtonDown(Enum.GetName(typeof(Button), button)))
+                        buttonInput((Button)button, ButtonState.Pressed);
+                    if (UnityEngine.Input.GetButtonUp(Enum.GetName(typeof(Button), button)))
+                        buttonInput((Button)button, ButtonState.Released);
+                    if (UnityEngine.Input.GetButton(Enum.GetName(typeof(Button), button)))
+                        buttonInput((Button)button, ButtonState.Held);
+                }
 
-            foreach (var axis2D in Enum.GetValues(typeof(Axis2D))) {
-                float horizontal, vertical;
-                horizontal = UnityEngine.Input.GetAxis(Enum.GetName(typeof(Axis2D), axis2D) + "Horizontal");
-                vertical = UnityEngine.Input.GetAxis(Enum.GetName(typeof(Axis2D), axis2D) + "Vertical");
-                axis2DInput((Axis2D)axis2D, horizontal, vertical);
-            }
+            if (axis2DInput != null)
+                foreach (var axis2D in Enum.GetValues(typeof(Axis2D))) {
+                    float horizontal, vertical;
+                    horizontal = UnityEngine.Input.GetAxis(Enum.GetName(typeof(Axis2D), axis2D) + "Horizontal");
+                    vertical = UnityEngine.Input.GetAxis(Enum.GetName(typeof(Axis2D), axis2D) + "Vertical");
+                    axis2DInput((Axis2D)axis2D, horizontal, vertical);
+                }
         }
 
         void OnApplicationQuit() {

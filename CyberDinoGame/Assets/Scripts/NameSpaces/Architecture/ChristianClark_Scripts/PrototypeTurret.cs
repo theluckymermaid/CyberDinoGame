@@ -23,7 +23,7 @@ public class PrototypeTurret : MonoBehaviour {
         turretPivot.LookAt(target);
 
         if ((transform.position - target.position).magnitude <= aggroRange && Time.time - lastFired > fireRate) {
-            PrototypeBullet bullet = Instantiate(bulletPrefab, bulletSpawnPoint.position, bulletSpawnPoint.rotation, dynamicObjectFolder).GetComponent<PrototypeBullet>();
+            PrototypeBullet bullet = (Instantiate(bulletPrefab, bulletSpawnPoint.position, bulletSpawnPoint.rotation, dynamicObjectFolder) as GameObject).GetComponent<PrototypeBullet>();
             bullet.owner = this.transform;
             lastFired = Time.time;
         }

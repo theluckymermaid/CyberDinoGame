@@ -17,11 +17,12 @@ public class PrototypeDino : MonoBehaviour {
 
     private bool sprinting = false;
 
-    //public Transform bulletSpawnPoint;
-    //public GameObject bulletPrefab;
-    //public Transform dynamicObjectsTransform;
-    //public float fireRate = 0.1f;
-    //private float lastFired = 0f;
+    public Transform[] bulletSpawnPoints;
+    private int bulletSpawnPointIndex = 0;
+    public GameObject bulletPrefab;
+    public Transform dynamicObjectsTransform;
+    public float fireRate = 0.1f;
+    private float lastFired = 0f;
 
     private Vector2 moveInput = new Vector2();
     private Vector3 velocity = new Vector3();
@@ -60,13 +61,15 @@ public class PrototypeDino : MonoBehaviour {
                     sprinting = false;
 
                 break;
-            //case Button.ButtonFire:
-            //    if (buttonState == ButtonState.Held && (Time.time - lastFired > fireRate)) {
-            //        PrototypeBullet bullet = (Instantiate(bulletPrefab, bulletSpawnPoint.position, bulletSpawnPoint.rotation, dynamicObjectsTransform) as GameObject).GetComponent<PrototypeBullet>();
-            //        bullet.owner = this.transform;
-            //        lastFired = Time.time;
-            //    }
-            //    break;
+            case Button.Fire:
+                if (buttonState == ButtonState.Held && (Time.time - lastFired > fireRate)) {
+                    bulletSpawnPointIndex = (bulletSpawnPointIndex + 1) % bulletSpawnPoints.Length;
+
+                    PrototypeBullet bullet = (Instantiate(bulletPrefab, bulletSpawnPoints[bulletSpawnPointIndex].position, bulletSpawnPoints[bulletSpawnPointIndex].rotation, dynamicObjectsTransform) as GameObject).GetComponent<PrototypeBullet>();
+                    bullet.owner = this.transform;
+                    lastFired = Time.time;
+                }
+                break;
         }
     }
 

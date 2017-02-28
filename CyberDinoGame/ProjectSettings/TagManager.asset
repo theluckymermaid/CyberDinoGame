@@ -13,10 +13,10 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
-  - 
-  - 
+  - NotSelfColliding
+  - Actor2Ground
+  - Ground
+  - IgnoreGround
   - 
   - 
   - 

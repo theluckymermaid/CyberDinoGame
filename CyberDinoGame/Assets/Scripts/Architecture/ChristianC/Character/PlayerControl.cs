@@ -3,19 +3,19 @@ using System.Collections;
 using Architecture.Input;
 
 
-[RequireComponent(typeof(RigidbodyCharacter))]
+[RequireComponent(typeof(RigidbodyCharacterMotor))]
 public class PlayerControl : MonoBehaviour {
 
     [Tooltip("The camera that the player is using. This script bases input based on the orientation of this camera.")]
     public Camera playerCamera;
 
-    private RigidbodyCharacter character;
-    public RigidbodyCharacter Character { get { return character; } }
+    private RigidbodyCharacterMotor character;
+    public RigidbodyCharacterMotor Character { get { return character; } }
 
 
 	// Use this for initialization
 	void Start () {
-        character = GetComponent<RigidbodyCharacter>();
+        character = GetComponent<RigidbodyCharacterMotor>();
 	}
 
     void OnEnable() {
@@ -49,14 +49,6 @@ public class PlayerControl : MonoBehaviour {
     private void InputListener_ButtonInput(Button button, ButtonState state) {
         if (button == Button.Jump && state == ButtonState.Pressed) {
             character.jumpInput = true;
-        }
-
-        if (button == Button.Fire) {
-            if (state == ButtonState.Pressed) {
-                character.fireInput = true;
-            } else if (state == ButtonState.Released) {
-                character.fireInput = false;
-            }
         }
     }
 }

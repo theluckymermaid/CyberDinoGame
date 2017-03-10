@@ -1,31 +1,33 @@
 ﻿using UnityEngine;
 using System.Collections;
-using Architecture.Input;
 
-[RequireComponent(typeof(RigidbodyCharacter))]
+[RequireComponent(typeof(RigidbodyCharacterMotor))]
 public class ConfigurablePlayerControl : MonoBehaviour {
 
-    [Tooltip("The camera that the player is using. This script bases input based on the orientation of this camera.")]
-    public Camera playerCamera;
+    [Tooltip("What button to listen to in order to make the camera swing behind the player. Unity default is Right Click.")]
+    public string snapCameraButton = "Fire2";
+    [Tooltip("The camera that the player is using. This script bases input on the rotation of this camera.")]
+    public OrbitFollowCamera playerCamera;
 
-    private RigidbodyCharacter character;
-    public RigidbodyCharacter Character { get { return character; } }
+    private RigidbodyCharacterMotor character;
+    public RigidbodyCharacterMotor Character { get { return character; } }
 
-    [Tooltip("What axis to listen to for horizontal move input.")]
+    [Tooltip("What axis to listen to for horizontal move input. Unity default is A and D.")]
     public string moveHorizontalAxis = "Horizontal";
-    [Tooltip("What axis to lisen to for vertical move input.")]
+    [Tooltip("What axis to lisen to for vertical move input. Unity default is W and S.")]
     public string moveVerticalAxis = "Vertical";
 
-    [Tooltip("What button to listen to for jump button input.")]
+    [Tooltip("What button to listen to for jump button input. Unity default is Space.")]
     public string jumpButton = "Jump";
     private bool wasJumpHeld = false;
 
-    [Tooltip("What button to listen to for fire button input.")]
+    [Tooltip("What button to listen to for fire button input. Unity default is Left Click.")]
     public string fireButton = "Fire1";
+    public PrototypeWeapon weapon;
 
 	// Use this for initialization
 	void Start () {
-        character = GetComponent<RigidbodyCharacter>();
+        character = GetComponent<RigidbodyCharacterMotor>();
 	}
 
     void Update() {
@@ -50,6 +52,13 @@ public class ConfigurablePlayerControl : MonoBehaviour {
         }
         wasJumpHeld = Input.GetButton(jumpButton);
 
-        character.fireInput = Input.GetButton(fireButton);
+        if (Input.GetButton(fireButton) && weapon) {
+            weapon.Fire();
+        }
+
+        playerCamera.followTargetRotation = Input.GetButton(snapCameraButton);
+        
+        // Currently has a bit of strange behavouir when uncommented.
+        // character.enableAutoRotation = !Input.GetButton(snapCameraButton);
     }
 }

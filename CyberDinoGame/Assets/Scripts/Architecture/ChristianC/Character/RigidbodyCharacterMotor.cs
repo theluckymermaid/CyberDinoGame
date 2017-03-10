@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
-using Architecture.Input;
 
-public class RigidbodyCharacter : MonoBehaviour {
+[RequireComponent(typeof(Rigidbody))]
+public class RigidbodyCharacterMotor : MonoBehaviour {
 
     //Floating point math introduces a lot of errors. Adjust the goal/value by a small
     //amount when measuring floating point values to make up for that error.
@@ -14,6 +14,8 @@ public class RigidbodyCharacter : MonoBehaviour {
 
     #region Inspector Variables
     [Header("Movement Settings")]
+    [Tooltip("Can the character automatically rotate to match their input direction?")]
+    public bool enableAutoRotation = true;
     [Tooltip("How fast the character rotates to face the direction they're moving in. Degrees per second.")]
     public float autoRotationSpeed = 360f;
     [Tooltip("How fast the character can go! Acceleration and stopping scale with this number. Meters per second. Minimum value is 0.")]
@@ -44,6 +46,8 @@ public class RigidbodyCharacter : MonoBehaviour {
     public float ceilingAngle = 100f;
 
     [Header("[TEMPORARY FUNCTIONALITY] Art Object Tilting Settings")]
+    [Tooltip("Is tilting the art object enabled?")]
+    public bool enableArtTilt = true;
     [Tooltip("The transform of the GameObject that contains the art assets. Assumed to be parented to this object. Currently used for groundNormal tilt.")]
     public Transform artObjectTransform;
     [Tooltip("How fast the art transform tilts to match the ground angle in degrees/second. Set to 0 to disable.")]
@@ -70,8 +74,6 @@ public class RigidbodyCharacter : MonoBehaviour {
     public Vector3 moveInput = new Vector3();
     [HideInInspector]
     public bool jumpInput;
-    [HideInInspector]
-    public bool fireInput;
 
     //Variables used for caching.
     Rigidbody rb;
@@ -204,7 +206,12 @@ public class RigidbodyCharacter : MonoBehaviour {
 
 
     // Use this for initialization
-    void Start () {     
+    void Start () {
+        if (LayerMask.NameToLayer("Ground") == -1) {
+            Debug.LogError("ERROR: There is no Layer called \"Ground\"! Create that layer in Edit>Project Settings>Tags & Layers and assign all ground collision geometery to that layer or else this script will not work right!");
+            Debug.Break();
+        }
+
         rb = GetComponent<Rigidbody>();
         col = GetComponent<Collider>();
         tr = transform;
@@ -256,7 +263,13 @@ public class RigidbodyCharacter : MonoBehaviour {
             //Debug.Log("Walking into wall!");
             tempMoveInput = Vector3.ProjectOnPlane(tempMoveInput, Vector3.ProjectOnPlane(wallNormal, Vector3.up));
         }
-        
+
+        //This keeps the character from getting stuck when walking into the underside of a slope/ramp.
+        if (IsTouchingCeiling && Vector3.Dot(tempMoveInput, ceilingNormal) < 0) {
+            //Debug.Log("Walking into ceiling!");
+            tempMoveInput = Vector3.ProjectOnPlane(tempMoveInput, Vector3.ProjectOnPlane(ceilingNormal, Vector3.up));
+        }
+
 
         ////////////////////////////////////////////////////////////////////////////
         // Adjust variables to lay along the ground slope if we're on the ground. //
@@ -368,7 +381,7 @@ public class RigidbodyCharacter : MonoBehaviour {
         //Art rotation target
         Quaternion artRotationTarget = Quaternion.identity;
 
-        if (IsTouchingGround) {
+        if (enableArtTilt && IsTouchingGround) {
             artRotationTarget = Quaternion.FromToRotation(Vector3.up, tr.InverseTransformDirection(groundNormal));
         }
 
@@ -428,7 +441,7 @@ public class RigidbodyCharacter : MonoBehaviour {
         Quaternion rotationTarget = Quaternion.identity;
         //Rotate the way we're moving towards! But only if we have some sideways input.
         //This would work much better if the camera wasn't parented directy to the player
-        if (moveInput.magnitude >= smallTolerance) {
+        if (enableAutoRotation && moveInput.magnitude >= smallTolerance) {
             rotationTarget = Quaternion.FromToRotation(Vector3.forward, moveInput);
             rotationTarget.eulerAngles = new Vector3(0, rotationTarget.eulerAngles.y, 0);
             tr.rotation = Quaternion.RotateTowards(tr.rotation, rotationTarget, autoRotationSpeed * Time.fixedDeltaTime);

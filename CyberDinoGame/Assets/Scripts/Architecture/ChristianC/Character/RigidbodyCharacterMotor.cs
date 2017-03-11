@@ -20,6 +20,8 @@ public class RigidbodyCharacterMotor : MonoBehaviour {
     public float autoRotationSpeed = 360f;
     [Tooltip("How fast the character can go! Acceleration and stopping scale with this number. Meters per second. Minimum value is 0.")]
     public float maxSpeed = 20f;
+    [Tooltip("How fast the character can go while sprinting!")]
+    public float maxSprintSpeed = 30f;
     [Tooltip("How long it takes to get up to Max Speed. Minimum value is Time.fixedDeltaTime * 2 (two frames). Is effected by how fast the move input itself gets to 100%.")]
     public float accelerationTime = 0.5f;
     [Tooltip("How long it takes to stop after going at Max Speed. Minimum value is Time.fixedDeltaTime * 2 (two frames).")]
@@ -73,7 +75,9 @@ public class RigidbodyCharacterMotor : MonoBehaviour {
     [HideInInspector]
     public Vector3 moveInput = new Vector3();
     [HideInInspector]
-    public bool jumpInput;
+    public bool jumpInput = false;
+    [HideInInspector]
+    public bool sprintInput = false;
 
     //Variables used for caching.
     Rigidbody rb;
@@ -281,17 +285,19 @@ public class RigidbodyCharacterMotor : MonoBehaviour {
         Vector3 velocityProjectedOnSlope;
         //Get the speed we'll be using, it will be less if we're in the air.
         float effectiveSpeed;
+        // Get the maxSpeed value we want to use.
+        float effectiveMaxSpeed = (sprintInput) ? maxSprintSpeed : maxSpeed;
 
         if (IsTouchingGround) {
             slopedInputNormal = Vector3.Cross(Vector3.Cross(Vector3.up, tempMoveInput), groundNormal);
             velocityProjectedOnSlope = Vector3.ProjectOnPlane(velocity, groundNormal);
-            effectiveSpeed = maxSpeed;
+            effectiveSpeed = effectiveMaxSpeed;
         } else {
             // We are airborne
 
             slopedInputNormal = tempMoveInput;
             velocityProjectedOnSlope = Vector3.ProjectOnPlane(velocity, Vector3.up);
-            effectiveSpeed = maxSpeed * airControlPercentage;
+            effectiveSpeed = effectiveMaxSpeed * airControlPercentage;
         }
 
         
@@ -306,7 +312,7 @@ public class RigidbodyCharacterMotor : MonoBehaviour {
 
         float deccelSpeed = (effectiveSpeed / deccelerationTime) * Time.fixedDeltaTime;
         float accelSpeed = (effectiveSpeed / accelerationTime) * Time.fixedDeltaTime;
-        float desiredSpeed = maxSpeed * inputMagnitude;
+        float desiredSpeed = effectiveMaxSpeed * inputMagnitude;
 
         // Decceleration
         ////////////////
@@ -321,7 +327,7 @@ public class RigidbodyCharacterMotor : MonoBehaviour {
             if (velocityProjectedOnSlope.sqrMagnitude <= deccelerationForce.sqrMagnitude) {
                 // Works off of the idea that for a given variable a: a - a = 0
                 deccelerationChange = -velocityProjectedOnSlope;
-            } else if (velocityProjectedOnSlope.magnitude > maxSpeed + smallTolerance) {
+            } else if (velocityProjectedOnSlope.magnitude > effectiveMaxSpeed + smallTolerance) {
                 // If we're going TOO FAST then apply both the deccelation AND the acceleration force.
                 // This serves as a way to apply extra force to a direction that we're both going TOO FAST and are moving towards.
                 // Meaning, we will go from double maxSpeed to just maxSpeed in accelerationTime if we're moving in that direction.
@@ -627,6 +633,7 @@ public class RigidbodyCharacterMotor : MonoBehaviour {
         accelerationTime = Mathf.Max(Time.fixedDeltaTime * 2, accelerationTime);
         deccelerationTime = Mathf.Max(Time.fixedDeltaTime * 2, deccelerationTime);
         maxSpeed = Mathf.Max(0, maxSpeed);
+        maxSprintSpeed = Mathf.Max(0, maxSprintSpeed);
         airControlPercentage = Mathf.Clamp01(airControlPercentage);
         groundStickyDistance = Mathf.Max(0, groundStickyDistance);
         groundStickySphereCastRadius = Mathf.Max(0, groundStickySphereCastRadius);

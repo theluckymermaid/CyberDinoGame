@@ -21,9 +21,13 @@ public class ConfigurablePlayerControl : MonoBehaviour {
     public string jumpButton = "Jump";
     private bool wasJumpHeld = false;
 
+    [Tooltip("What button to lisen to for sprint button input. Unity default is Middle Click/Left Shift")]
+    public string sprintButton = "Fire3";
+
     [Tooltip("What button to listen to for fire button input. Unity default is Left Click.")]
     public string fireButton = "Fire1";
     public PrototypeWeapon weapon;
+
 
 	// Use this for initialization
 	void Start () {
@@ -39,6 +43,10 @@ public class ConfigurablePlayerControl : MonoBehaviour {
 
         if (character.moveInput.magnitude > 1f) {
             character.moveInput.Normalize();
+        }
+
+        if (character.IsTouchingGround) {
+            character.sprintInput = Input.GetButton(sprintButton);
         }
 
         //Lastly, rotate the input to be rotated along with the object.

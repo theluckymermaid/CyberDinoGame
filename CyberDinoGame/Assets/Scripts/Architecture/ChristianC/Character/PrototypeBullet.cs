@@ -28,7 +28,7 @@ public class PrototypeBullet : MonoBehaviour {
 
     void OnTriggerEnter(Collider other) {
         Transform trOther = other.transform;
-        Debug.Log(other.gameObject.name);
+        //Debug.Log(other.gameObject.name);
         if (!other.isTrigger && !(owner == trOther || trOther.IsChildOf(owner) || owner.IsChildOf(trOther))) {
             Destroy(this.gameObject);
         }

@@ -53,7 +53,7 @@ public class OrbitFollowCamera : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void LateUpdate () {
         if (target) {
 
             float horzInput = Input.GetAxis(lookHorizontalAxis);

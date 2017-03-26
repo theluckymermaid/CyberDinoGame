@@ -3,7 +3,7 @@ using System.Collections;
 using System;
 using UnityEngine.UI;
 
-public class HealthBar : MonoBehaviour
+public class HealthBar_KO : MonoBehaviour
 {
     //This script decreases the health bar when the player is damaged
     //Variable for the health bar that is displayed to everyone

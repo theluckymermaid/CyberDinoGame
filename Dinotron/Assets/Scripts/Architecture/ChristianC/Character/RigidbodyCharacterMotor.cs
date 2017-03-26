@@ -2,7 +2,7 @@
 using System.Collections;
 
 [RequireComponent(typeof(Rigidbody))]
-public class RigidbodyCharacterMotor : MonoBehaviour {
+public class RigidbodyCharacterMotor : DinoCharacterMotor {
 
     //Floating point math introduces a lot of errors. Adjust the goal/value by a small
     //amount when measuring floating point values to make up for that error.
@@ -18,10 +18,6 @@ public class RigidbodyCharacterMotor : MonoBehaviour {
     public bool enableAutoRotation = true;
     [Tooltip("How fast the character rotates to face the direction they're moving in. Degrees per second.")]
     public float autoRotationSpeed = 360f;
-    [Tooltip("How fast the character can go! Acceleration and stopping scale with this number. Meters per second. Minimum value is 0.")]
-    public float maxSpeed = 20f;
-    [Tooltip("How fast the character can go while sprinting!")]
-    public float maxSprintSpeed = 30f;
     [Tooltip("How long it takes to get up to Max Speed. Minimum value is Time.fixedDeltaTime * 2 (two frames). Is effected by how fast the move input itself gets to 100%.")]
     public float accelerationTime = 0.5f;
     [Tooltip("How long it takes to stop after going at Max Speed. Minimum value is Time.fixedDeltaTime * 2 (two frames).")]
@@ -70,14 +66,6 @@ public class RigidbodyCharacterMotor : MonoBehaviour {
     public float groundStickyDisableDuration = 0.1f;
     float groundStickyDisabledUntilTime;
     #endregion
-
-    //Input variables
-    [HideInInspector]
-    public Vector3 moveInput = new Vector3();
-    [HideInInspector]
-    public bool jumpInput = false;
-    [HideInInspector]
-    public bool sprintInput = false;
 
     //Variables used for caching.
     Rigidbody rb;
@@ -235,7 +223,7 @@ public class RigidbodyCharacterMotor : MonoBehaviour {
     // Fixed Update. Adjust the velocity of the character and let the physics engine handle moving it. //
     /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void FixedUpdate () {
+    public override void Move(float deltaTime) {
         //Debug.Log("New FixedUpdate");
 
         // Store the rigidbody's velocity in our own variable to allow for easier editting
@@ -250,7 +238,7 @@ public class RigidbodyCharacterMotor : MonoBehaviour {
         }
 
         //Create a copy of the moveInput variable since it is possible that we will be editting it directly right in the next step.
-        Vector3 tempMoveInput = moveInput;
+        Vector3 tempMoveInput = dino.moveInput;
         float inputMagnitude = tempMoveInput.magnitude;
 
         // Do not allow the character to walk up steep slopes and walls by clamping the input in that direction.
@@ -286,7 +274,7 @@ public class RigidbodyCharacterMotor : MonoBehaviour {
         //Get the speed we'll be using, it will be less if we're in the air.
         float effectiveSpeed;
         // Get the maxSpeed value we want to use.
-        float effectiveMaxSpeed = (sprintInput) ? maxSprintSpeed : maxSpeed;
+        float effectiveMaxSpeed = (dino.IsSprinting) ? dino.sprintSpeed : dino.speed;
 
         if (IsTouchingGround) {
             slopedInputNormal = Vector3.Cross(Vector3.Cross(Vector3.up, tempMoveInput), groundNormal);
@@ -310,8 +298,8 @@ public class RigidbodyCharacterMotor : MonoBehaviour {
         // Acceleration and Decceleration along the ground slope //
         ///////////////////////////////////////////////////////////
 
-        float deccelSpeed = (effectiveSpeed / deccelerationTime) * Time.fixedDeltaTime;
-        float accelSpeed = (effectiveSpeed / accelerationTime) * Time.fixedDeltaTime;
+        float deccelSpeed = (effectiveSpeed / deccelerationTime) * deltaTime;
+        float accelSpeed = (effectiveSpeed / accelerationTime) * deltaTime;
         float desiredSpeed = effectiveMaxSpeed * inputMagnitude;
 
         // Decceleration
@@ -351,7 +339,7 @@ public class RigidbodyCharacterMotor : MonoBehaviour {
 
         Vector3 accelerationChange = Vector3.zero;
         // Only apply acceleration if there's input.
-        if (moveInput != Vector3.zero) {
+        if (dino.moveInput != Vector3.zero) {
 
             float force = accelSpeed;
             //Counteract the deccelleration force. Doing it here means that the counteracting is only in the direction we're moving.
@@ -392,16 +380,16 @@ public class RigidbodyCharacterMotor : MonoBehaviour {
         }
 
         //Rotate the art object's local rotation according to the ground tilt.
-        artObjectTransform.localRotation = Quaternion.RotateTowards(artObjectTransform.localRotation, artRotationTarget, artTiltSpeed * Time.fixedDeltaTime);
+        artObjectTransform.localRotation = Quaternion.RotateTowards(artObjectTransform.localRotation, artRotationTarget, artTiltSpeed * deltaTime);
 
         /////////////////////////
         // Jumping and Gravity //
         /////////////////////////
 
         //Jumping
-        if (jumpInput) {
+        if (dino.jumpInput) {
             //Consume the jump input on the first fixed update it's read in.
-            jumpInput = false;
+            dino.jumpInput = false;
 
             if (IsTouchingGround && !IsStandingOnSteepSlope) {
                 Vector3 jumpForce = Vector3.up;
@@ -417,10 +405,10 @@ public class RigidbodyCharacterMotor : MonoBehaviour {
         if (IsTouchingGround) {
             if (!IsStandingOnSteepSlope) {
                 // If we're on the ground, apply gravity such that it sticks us to the slope.
-                velocity -= groundNormal * gravity * Time.fixedDeltaTime;
+                velocity -= groundNormal * gravity * deltaTime;
             } else {
                 // If we're on a steep slope, we want to slide down it!
-                velocity += Vector3.ProjectOnPlane(Vector3.down, slopeNormal) * ((gravity * Time.fixedDeltaTime) + deccelSpeed);
+                velocity += Vector3.ProjectOnPlane(Vector3.down, slopeNormal) * ((gravity * deltaTime) + deccelSpeed);
 
                 // But lets not go downwards too fast! Though lets check if we're going downwards first.
                 if (Vector3.Dot(Vector3.down, velocity) > 0) {
@@ -430,7 +418,7 @@ public class RigidbodyCharacterMotor : MonoBehaviour {
         } else {
 
             // Apply normal gravity;
-            velocity.y -= gravity * Time.fixedDeltaTime;
+            velocity.y -= gravity * deltaTime;
 
             //Limit falling speed
             if (velocity.y < -terminalVelocity) {
@@ -447,10 +435,10 @@ public class RigidbodyCharacterMotor : MonoBehaviour {
         Quaternion rotationTarget = Quaternion.identity;
         //Rotate the way we're moving towards! But only if we have some sideways input.
         //This would work much better if the camera wasn't parented directy to the player
-        if (enableAutoRotation && moveInput.magnitude >= smallTolerance) {
-            rotationTarget = Quaternion.FromToRotation(Vector3.forward, moveInput);
+        if (enableAutoRotation && dino.moveInput.magnitude >= smallTolerance) {
+            rotationTarget = Quaternion.FromToRotation(Vector3.forward, dino.moveInput);
             rotationTarget.eulerAngles = new Vector3(0, rotationTarget.eulerAngles.y, 0);
-            tr.rotation = Quaternion.RotateTowards(tr.rotation, rotationTarget, autoRotationSpeed * Time.fixedDeltaTime);
+            tr.rotation = Quaternion.RotateTowards(tr.rotation, rotationTarget, autoRotationSpeed * deltaTime);
         }
 
         //Save velocity changes
@@ -632,8 +620,6 @@ public class RigidbodyCharacterMotor : MonoBehaviour {
     public void OnValidate() {
         accelerationTime = Mathf.Max(Time.fixedDeltaTime * 2, accelerationTime);
         deccelerationTime = Mathf.Max(Time.fixedDeltaTime * 2, deccelerationTime);
-        maxSpeed = Mathf.Max(0, maxSpeed);
-        maxSprintSpeed = Mathf.Max(0, maxSprintSpeed);
         airControlPercentage = Mathf.Clamp01(airControlPercentage);
         groundStickyDistance = Mathf.Max(0, groundStickyDistance);
         groundStickySphereCastRadius = Mathf.Max(0, groundStickySphereCastRadius);

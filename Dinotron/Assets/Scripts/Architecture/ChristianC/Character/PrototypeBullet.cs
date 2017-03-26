@@ -33,19 +33,10 @@ public class PrototypeBullet : MonoBehaviour {
         //Debug.Log(other.gameObject.name);
         if (!other.isTrigger && !(owner == trOther || trOther.IsChildOf(owner) || owner.IsChildOf(trOther))) {
 
-            PrototypeDamageable damageable = other.GetComponent<PrototypeDamageable>();
-            if (damageable)
+            DinoCharacter dino = other.GetComponent<DinoCharacter>();
+            if (dino)
             {
-                damageable.ChangeHealth(-damage);
-
-                if (damageable.currentHealth == 0)
-                {
-                    KillCount count = owner.GetComponentInParent<KillCount>();
-                    if (count)
-                    {
-                        count.Count += 1;
-                    }
-                }
+                dino.CurrentHealth -= damage;
             }
 
             Destroy(this.gameObject);

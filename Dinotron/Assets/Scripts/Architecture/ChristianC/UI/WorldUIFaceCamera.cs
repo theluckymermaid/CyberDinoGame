@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class WorldUIBar : MonoBehaviour {
+public class WorldUIFaceCamera : MonoBehaviour {
 
     public Camera playerCamera;
     private Transform cameraTransform;
@@ -17,15 +17,18 @@ public class WorldUIBar : MonoBehaviour {
 	}
 
     void OnValidate() {
-        tr.localPosition = offset;
         if (Application.isPlaying) {
+            if (tr != null)
+                tr.localPosition = offset;
             cameraTransform = playerCamera.transform;
+        } else {
+            transform.localPosition = offset;
         }
     }
 	
 	// Update is called once per frame
 	void LateUpdate () {
         tr.localPosition = offset;
-        tr.eulerAngles = cameraTransform.eulerAngles;
+        tr.rotation = cameraTransform.rotation;
 	}
 }

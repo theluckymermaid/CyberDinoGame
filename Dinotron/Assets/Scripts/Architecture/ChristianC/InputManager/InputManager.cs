@@ -219,7 +219,7 @@ public class InputManager : MonoBehaviour {
             }
 
             Dictionary<Axis2DDelegateKey, Axis2DDelegate>.KeyCollection axis2DKeys = dictAxis2DDelegates.Keys;
-            if (axisKeys.Count > 0) {
+            if (axis2DKeys.Count > 0) {
                 foreach (Axis2DDelegateKey key in axis2DKeys) {
                     dictAxis2DDelegates[key](Input.GetAxis(key.inputHorizontal), Input.GetAxis(key.inputVertical));
                 }

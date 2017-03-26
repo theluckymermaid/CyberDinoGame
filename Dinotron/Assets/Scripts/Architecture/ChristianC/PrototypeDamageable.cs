@@ -70,7 +70,7 @@ public class PrototypeDamageable : MonoBehaviour {
         regenRate = 0;
         regenCounter = 0;
 
-        GetComponent<ConfigurablePlayerControl>().enabled = false;
+        GetComponent<PlayerControl>().enabled = false;
         GetComponentInChildren<PrototypeWeapon>().enabled = false;
         GetComponent<RigidbodyCharacterMotor>().enabled = false;
         GetComponent<Rigidbody>().velocity = Vector3.zero;
@@ -103,7 +103,7 @@ public class PrototypeDamageable : MonoBehaviour {
             onHealthChange(maxHealth, maxHealth);
         dead = false;
 
-        GetComponent<ConfigurablePlayerControl>().enabled = true;
+        GetComponent<PlayerControl>().enabled = true;
         GetComponentInChildren<PrototypeWeapon>().enabled = true;
         GetComponent<RigidbodyCharacterMotor>().enabled = true;
 

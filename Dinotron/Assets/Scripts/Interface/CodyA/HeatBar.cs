@@ -7,136 +7,126 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
-public class HeatBar: MonoBehaviour 
-{
-	//Public Variables ------------------------------------------
-	public Image overlayImage;
-	float maxAlphaPercent = .75f;
+namespace Interface {
+    public class HeatBar : MonoBehaviour {
+        //Public Variables ------------------------------------------
+        public Image overlayImage;
+        float maxAlphaPercent = .75f;
 
-	public Image fillImage;
-	[Range (0, 0.02f)]
-	[Tooltip("Rate at which the bar cools down")]
-	public float cooldownSpeed = .005f;
-	[Range (0,2)]
-	[Tooltip("Time to wait before cooldown starts after overheating")]
-	public float overheatedTimer = .5f;
-	[Range (0,1)]
-	[Tooltip("Percentage at which cooldown starts again after overheating")]
-	public float waitUntilPercent = .75f;
+        public Image fillImage;
+        [Range(0, 0.02f)]
+        [Tooltip("Rate at which the bar cools down")]
+        public float cooldownSpeed = .005f;
+        [Range(0, 2)]
+        [Tooltip("Time to wait before cooldown starts after overheating")]
+        public float overheatedTimer = .5f;
+        [Range(0, 1)]
+        [Tooltip("Percentage at which cooldown starts again after overheating")]
+        public float waitUntilPercent = .75f;
 
-	public Action<bool> overheat;
+        public Action<bool> overheat;
 
-	[Header("Drag Weapon script here")]
-	public PrototypeWeapon weapon; //Change "Shooter" to name of weapon Script <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-//	Check out ExampleConfigurablePlayerControl and ExamplePrototypeWeapon for what to add to those <<<<<<<<<<<
+        //[Header("Drag Weapon script here")]
+        //public PrototypeWeapon weapon; //Change "Shooter" to name of weapon Script <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+        //	Check out ExampleConfigurablePlayerControl and ExamplePrototypeWeapon for what to add to those <<<<<<<<<<<
 
-	//Private Variables ------------------------------------------
-	bool unfilling;
-	bool overheating = false;
-	Color c;
-	Color fillColor;
+        //Private Variables ------------------------------------------
+        bool unfilling;
+        bool overheating = false;
+        Color overlayColor;
+        Color fillColor;
 
-	//------------------------------------------------------------
-	void Start()
-	{
-		//Reset to Normal
-		fillImage.fillAmount = 0;
-		unfilling = false;
-		c = overlayImage.color;
-		fillColor = fillImage.color;
+        //------------------------------------------------------------
+        void Start() {
+            //Reset to Normal
+            fillImage.fillAmount = 0;
+            unfilling = false;
+            overlayColor = overlayImage.color;
+            fillColor = fillImage.color;
 
-		maxAlphaPercent = 1 - maxAlphaPercent;
+            maxAlphaPercent = 1 - maxAlphaPercent;
 
-		c.a = fillImage.fillAmount  - maxAlphaPercent;
-		overlayImage.color = c;
+            overlayColor.a = fillImage.fillAmount - maxAlphaPercent;
+            overlayImage.color = overlayColor;
 
-		fillColor.g = 1.2f - fillImage.fillAmount;
-		fillImage.color = fillColor;
+            fillColor.g = 1.2f - fillImage.fillAmount;
+            fillImage.color = fillColor;
 
-		//Subscribe to delegate
-		weapon.OnHeatChange += FillOrUnfill;
+            //Subscribe to delegate
+            //weapon.OnHeatChange += FillOrUnfill;
 
-	}
+        }
 
-	void FillOrUnfill(float _heat)
-	{
-		//Adding heat
-		if (_heat > 0)
-		{
-			Fill (_heat);
-		}
-		//Not adding heat
-		else
-		{
-			if (!overheating) 
-			{
-				StopAllCoroutines ();
-				StartCoroutine (Unfill ());
-			}
-		}
-	}
+        void FillOrUnfill(float _heat) {
+            //Adding heat
+            if (_heat > 0) {
+                Fill(_heat);
+            }
+            //Not adding heat
+            else {
+                if (!overheating) {
+                    StopAllCoroutines();
+                    StartCoroutine(Unfill());
+                }
+            }
+        }
 
-	void Fill(float _heat)
-	{
-		if(unfilling)
-			StopAllCoroutines ();			
+        void Fill(float _heat) {
+            if (unfilling)
+                StopAllCoroutines();
 
-		//Add heat to bar
-		fillImage.fillAmount += _heat;
+            //Add heat to bar
+            fillImage.fillAmount += _heat;
 
-		//Change color of bar and overlay
-		c.a = fillImage.fillAmount - maxAlphaPercent;
-		overlayImage.color = c;
-		fillColor.g = 1.2f - fillImage.fillAmount;
-		fillImage.color = fillColor;
+            //Change color of bar and overlay
+            overlayColor.a = fillImage.fillAmount - maxAlphaPercent;
+            overlayImage.color = overlayColor;
+            fillColor.g = 1.2f - fillImage.fillAmount;
+            fillImage.color = fillColor;
 
-		//When bar is full start overheating
-		if (fillImage.fillAmount == 1)
-		{
-			overheating = true;
-			if (overheat != null)
-				overheat (overheating);
-			
-			StartCoroutine (OverheatingTimer ());
-		}
-	}
+            //When bar is full start overheating
+            if (fillImage.fillAmount == 1) {
+                overheating = true;
+                if (overheat != null)
+                    overheat(overheating);
 
-	IEnumerator Unfill()
-	{
-		yield return new WaitForEndOfFrame ();
-		unfilling = true;
+                StartCoroutine(OverheatingTimer());
+            }
+        }
 
-		while(fillImage.fillAmount > 0)
-		{
-			//Subtract heat
-			fillImage.fillAmount -= cooldownSpeed;
+        IEnumerator Unfill() {
+            yield return new WaitForEndOfFrame();
+            unfilling = true;
 
-			//Change color
-			c.a = fillImage.fillAmount  - maxAlphaPercent;
-			overlayImage.color = c;
-			fillColor.g = 1.2f - fillImage.fillAmount;
-			fillImage.color = fillColor;
+            while (fillImage.fillAmount > 0) {
+                //Subtract heat
+                fillImage.fillAmount -= cooldownSpeed;
 
-			//Stop overheating
-			if (overheating && fillImage.fillAmount <= waitUntilPercent)
-			{
-				overheating = false;
-				if (overheat != null)
-					overheat (overheating);
-			}
+                //Change color
+                overlayColor.a = fillImage.fillAmount - maxAlphaPercent;
+                overlayImage.color = overlayColor;
+                fillColor.g = 1.2f - fillImage.fillAmount;
+                fillImage.color = fillColor;
 
-			yield return new WaitForSeconds (cooldownSpeed);
-		}
+                //Stop overheating
+                if (overheating && fillImage.fillAmount <= waitUntilPercent) {
+                    overheating = false;
+                    if (overheat != null)
+                        overheat(overheating);
+                }
 
-		if (fillImage.fillAmount < 0)
-			fillImage.fillAmount = 0;
-		unfilling = false;
-	}
+                yield return new WaitForSeconds(cooldownSpeed);
+            }
 
-	IEnumerator OverheatingTimer()
-	{
-		//Time to waite when overheated before cooldown starts
-		yield return new WaitForSeconds (overheatedTimer);
-		StartCoroutine (Unfill ());
-	}
+            if (fillImage.fillAmount < 0)
+                fillImage.fillAmount = 0;
+            unfilling = false;
+        }
+
+        IEnumerator OverheatingTimer() {
+            //Time to waite when overheated before cooldown starts
+            yield return new WaitForSeconds(overheatedTimer);
+            StartCoroutine(Unfill());
+        }
+    }
 }

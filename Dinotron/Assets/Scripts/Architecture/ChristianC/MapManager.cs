@@ -133,6 +133,7 @@ public class MapManager : MonoBehaviour {
         worldDinoUI.dino = data.dinoCharacter;
         worldDinoUI.playerCamera = viewerdata.playerCamera;
         worldDinoUI.playerNumber = viewerdata.playerNumber;
+        worldDinoUI.dinoPlayerNumber = data.playerNumber;
 
         // Enable the object
         worldUIObject.SetActive(true);

@@ -4,7 +4,7 @@ using System.Collections;
 
 public class DinoLabel : MonoBehaviour {
 
-    public DinoUI dinoUI;
+    public WorldDinoUI worldDinoUI;
     public Image image;
     public Sprite[] labelTextures;
 
@@ -18,9 +18,9 @@ public class DinoLabel : MonoBehaviour {
     }
 
     void ChangeLabelSprite() {
-        if (dinoUI.playerNumber >= 1 && dinoUI.playerNumber <= PlayerManager.MaxPlayerCount) {
+        if (worldDinoUI.dinoPlayerNumber >= 1 && worldDinoUI.dinoPlayerNumber <= PlayerManager.MaxPlayerCount) {
             image.enabled = true;
-            image.sprite = labelTextures[dinoUI.playerNumber - 1];
+            image.sprite = labelTextures[worldDinoUI.dinoPlayerNumber - 1];
         } else {
             image.enabled = false;
         }

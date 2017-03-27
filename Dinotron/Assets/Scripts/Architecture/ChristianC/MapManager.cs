@@ -83,6 +83,12 @@ public class MapManager : MonoBehaviour {
         dinoCamera.playerControl = playerControl;
         dinoCamera.target = dinoTransform;
 
+        // Disable the audio listener if we're not player 1. Unity freaks out about this.
+        if (playerNumber != 1) {
+            AudioListener audio = cameraObject.GetComponent<AudioListener>();
+            audio.enabled = false;
+        }
+
         // UI Script
         dinoUI.dino = dinoCharacter;
         dinoUI.playerCamera = playerCamera;

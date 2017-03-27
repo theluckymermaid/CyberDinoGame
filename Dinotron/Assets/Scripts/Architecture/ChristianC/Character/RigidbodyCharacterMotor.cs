@@ -197,6 +197,8 @@ public class RigidbodyCharacterMotor : DinoCharacterMotor {
     #endregion
 
 
+    private bool started = false;
+
     // Use this for initialization
     void Start () {
         if (LayerMask.NameToLayer("Ground") == -1) {
@@ -213,6 +215,8 @@ public class RigidbodyCharacterMotor : DinoCharacterMotor {
 
         //Make sure the groundStickyEffect isn't prematurely disabled.
         groundStickyDisabledUntilTime = -groundStickyDisableDuration;
+
+        started = true;
     }
 
     float CalculateJumpForce() {
@@ -224,6 +228,9 @@ public class RigidbodyCharacterMotor : DinoCharacterMotor {
     /////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public override void Move(float deltaTime) {
+        if (!started) {
+            return;
+        }
         //Debug.Log("New FixedUpdate");
 
         // Store the rigidbody's velocity in our own variable to allow for easier editting

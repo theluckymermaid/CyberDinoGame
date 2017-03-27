@@ -2,27 +2,32 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class WorldUIFaceCamera : MonoBehaviour {
+public class WorldDinoUI : DinoUI {
 
-    public Camera playerCamera;
     private Transform cameraTransform;
     private Transform tr;
 
     public Vector3 offset = new Vector3(0, 2, 0);
 
 	// Use this for initialization
-	void Start () {
+	public override void Start () {
+        base.Start();
         cameraTransform = playerCamera.transform;
         tr = transform;
 	}
 
+    protected override void SetupCanvas() {
+        canvas.renderMode = RenderMode.WorldSpace;
+        canvas.worldCamera = playerCamera;
+    }
+
     void OnValidate() {
-        if (Application.isPlaying) {
-            if (tr != null)
-                tr.localPosition = offset;
-            cameraTransform = playerCamera.transform;
-        } else {
-            transform.localPosition = offset;
+        if (gameObject.activeInHierarchy) {
+            if (Application.isPlaying) {
+                cameraTransform = playerCamera.transform;
+            } else {
+                transform.localPosition = offset;
+            }
         }
     }
 	

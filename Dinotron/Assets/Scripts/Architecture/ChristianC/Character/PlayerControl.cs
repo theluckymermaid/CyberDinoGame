@@ -4,10 +4,11 @@ using System.Collections;
 [RequireComponent(typeof(RigidbodyCharacterMotor))]
 public class PlayerControl : MonoBehaviour {
 
+    public int playerNumber = 1;
     private Transform tr;
 
     [Tooltip("The camera that the player is using. This script bases input on the rotation and position of this camera.")]
-    public OrbitCamera playerCamera;
+    public PlayerDinoCamera playerCamera;
     private Transform cameraTransform;
 
     public DinoCharacter dino;

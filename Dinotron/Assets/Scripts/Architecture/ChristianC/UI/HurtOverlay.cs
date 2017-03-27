@@ -4,7 +4,7 @@ using System.Collections;
 
 public class HurtOverlay : MonoBehaviour {
 
-    public DinoCharacter dino;
+    public DinoUI dinoUI;
     public Image overlayImage;
     public AnimationCurve healthPercentOverlayAlphaCurve;
     [Range(0, 1)]
@@ -19,12 +19,12 @@ public class HurtOverlay : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        overlayColor = overlayImage.color;
-        UpdateOverlay(dino.CurrentHealth / dino.MaxHealth);
+        overlayColor = Color.white;
+        UpdateOverlay(dinoUI.dino.CurrentHealth / dinoUI.dino.MaxHealth);
 	}
 	
     void OnEnable() {
-        dino.HealthChangePercentage += UpdateOverlay;
+        dinoUI.dino.HealthChangePercentage += UpdateOverlay;
     }
 
     void UpdateOverlay(float percentage) {

@@ -7,11 +7,14 @@ using UnityEditor;
 
 public class PlayerManagerConfig : ScriptableObject {
 
+    public int maxPlayers = 4;
     public PlayerInputConfig[] inputConfigs;
-    
+    public PlayerCamerasConfig[] cameraLayouts;
+    public LayerMask[] playerCameraLayerMasks;
+    public int[] playerUILayers;
 
 #if UNITY_EDITOR
-    [MenuItem("Dinotron/Create Asset/PlayerManagerConfig")]
+    [MenuItem("Dinotron/Create Asset/Player Manager/PlayerManagerConfig")]
     public static void CreatePlayerInputConfig() {
         PlayerManagerConfig config = ScriptableObject.CreateInstance<PlayerManagerConfig>();
         AssetDatabase.CreateAsset(config, "Assets/PlayerManagerConfig.asset");

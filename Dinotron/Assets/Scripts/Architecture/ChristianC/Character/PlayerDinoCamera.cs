@@ -1,14 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class OrbitCamera : MonoBehaviour {
+[RequireComponent(typeof(Camera))]
+public class PlayerDinoCamera : MonoBehaviour {
 
+    public PlayerControl playerControl;
     public Transform target;
-    public Vector3 targetOffset = new Vector3(0, 2, 0);
+    public Vector3 targetOffset = new Vector3(0, 3, 0);
 
     public float distance = 10f;
 
-    public PlayerInputConfig inputConfig;
     public bool invertVerticalAxis = false;
     private float horzInput = 0;
     private float vertInput = 0;
@@ -16,7 +17,7 @@ public class OrbitCamera : MonoBehaviour {
     public float horizontalSpeed = 120f;
     public float verticalSpeed = 120f;
 
-    public float minimumVerticalAngle = -20f;
+    public float minimumVerticalAngle = -60f;
     public float maximumVerticalAngle = 80f;
 
     public float cameraCollisionRadius = 0.25f;
@@ -25,10 +26,12 @@ public class OrbitCamera : MonoBehaviour {
     private float verticalAngle;
 
     private Transform tr;
+    private Camera playerCamera;
 
 	// Use this for initialization
 	void Start () {
         tr = transform;
+        playerCamera = GetComponent<Camera>();
         horizontalAngle = tr.eulerAngles.y;
         verticalAngle = tr.eulerAngles.x;
 
@@ -36,11 +39,11 @@ public class OrbitCamera : MonoBehaviour {
 	}
 
     void OnEnable() {
-        InputManager.AddAxis2DDelegate(inputConfig.lookHorizontalInput, inputConfig.lookVerticalInput, LookInput);
+        InputManager.AddAxis2DDelegate(playerControl.inputConfig.lookHorizontalInput, playerControl.inputConfig.lookVerticalInput, LookInput);
     }
 
     void OnDisable() {
-        InputManager.RemoveAxis2DDelegate(inputConfig.lookHorizontalInput, inputConfig.lookVerticalInput, LookInput);
+        InputManager.RemoveAxis2DDelegate(playerControl.inputConfig.lookHorizontalInput, playerControl.inputConfig.lookVerticalInput, LookInput);
     }
 
     void LookInput(float horz, float vert) {

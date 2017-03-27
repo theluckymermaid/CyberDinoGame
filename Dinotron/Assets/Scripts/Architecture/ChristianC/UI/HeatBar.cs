@@ -5,7 +5,7 @@ using System.Collections;
 //Working parts copied from what was inside CodyA's code.
 public class HeatBar : MonoBehaviour {
 
-    public DinoCharacter dino;
+    public DinoUI dinoUI;
 
     public Image heatBarImage;
     public Image hearBarBackgroundImage;
@@ -21,11 +21,11 @@ public class HeatBar : MonoBehaviour {
     }
 
     void OnEnable() {
-        dino.HeatChangePercentage += UpdateHeatBar;
+        dinoUI.dino.HeatChangePercentage += UpdateHeatBar;
     }
 
     void OnDisable() {
-        dino.HeatChangePercentage -= UpdateHeatBar;
+        dinoUI.dino.HeatChangePercentage -= UpdateHeatBar;
     }
 
     private void UpdateHeatBar(float percentage) {
@@ -34,7 +34,7 @@ public class HeatBar : MonoBehaviour {
         hearBarBackgroundImage.fillAmount = 1f - percentage;
 
         //Change color of bar and overlay
-        if (!dino.Overheated) {
+        if (!dinoUI.dino.Overheated) {
             heatBarImage.color = Color.Lerp(startColor, endColor, percentage);
         } else {
             heatBarImage.color = endColor;

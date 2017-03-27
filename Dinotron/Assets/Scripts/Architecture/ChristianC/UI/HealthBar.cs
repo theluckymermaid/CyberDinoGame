@@ -4,15 +4,15 @@ using System.Collections;
 
 public class HealthBar : MonoBehaviour {
 
-    public DinoCharacter dino;
+    public DinoUI dinoUI;
     public Image healthBar;
 
     void OnEnable() {
-        dino.HealthChangePercentage += UpdateHealthBar;
+        dinoUI.dino.HealthChangePercentage += UpdateHealthBar;
     }
 
     void OnDisable() {
-        dino.HealthChangePercentage -= UpdateHealthBar;
+        dinoUI.dino.HealthChangePercentage -= UpdateHealthBar;
     }
 
     void UpdateHealthBar(float percentage) {

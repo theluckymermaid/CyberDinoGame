@@ -16,7 +16,7 @@ public class PlayerInputConfig : ScriptableObject {
     public string sprintInput = "Fire3";
 
 #if UNITY_EDITOR
-    [MenuItem("Dinotron/Create Asset/PlayerInputConfig")]
+    [MenuItem("Dinotron/Create Asset/Player Manager/PlayerInputConfig")]
     public static void CreatePlayerInputConfig() {
         PlayerInputConfig config = ScriptableObject.CreateInstance<PlayerInputConfig>();
         AssetDatabase.CreateAsset(config, "Assets/NewPlayerInputConfig.asset");

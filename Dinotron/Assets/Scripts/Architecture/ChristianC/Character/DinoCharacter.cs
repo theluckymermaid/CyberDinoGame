@@ -98,7 +98,7 @@ public class DinoCharacter : MonoBehaviour {
 
     public Action<float> HealthChangePercentage;
     public Action<float, float> HealthChange;
-    public Action HeyIDied;
+    public Action Death;
 
     public Action<float> HeatChangePercentage;
     public Action<float, float> HeatChange;
@@ -115,8 +115,8 @@ public class DinoCharacter : MonoBehaviour {
             HealthChangePercentage.DynamicInvoke(currentHealth / maxHealth);
         }
 
-        if (currentHealth == 0 && HeyIDied != null) {
-            HeyIDied();
+        if (currentHealth == 0 && Death != null) {
+            Death();
         }
     }
 
@@ -134,6 +134,7 @@ public class DinoCharacter : MonoBehaviour {
         // Check wether or not we fulfil the condition for being overheated or not overheated.
         if (!overheated) {
             if (currentHeat >= maxHeat) {
+                overheatedAtTime = Time.time;
                 overheated = true;
                 if (Overheat != null) {
                     Overheat(true);
@@ -176,7 +177,7 @@ public class DinoCharacter : MonoBehaviour {
         }
 
         // Update heat cooling
-        if (!overheated || (overheated && (overheatedAtTime + overheatWaitPeriod <= Time.time))) {
+        if (!overheated || (overheated && (Time.time >= overheatedAtTime + overheatWaitPeriod))) {
             CurrentHeat -= heatCooldownPerSecond * Time.deltaTime;
         }
 	}

@@ -25,8 +25,9 @@ public class PrototypeWeapon : MonoBehaviour
 		if (Time.time - lastFired > fireRate) {
 			bulletSpawnPointIndex = (bulletSpawnPointIndex + 1) % bulletSpawnPoints.Length;
 
-			PrototypeBullet bullet = (Instantiate (bulletPrefab, bulletSpawnPoints [bulletSpawnPointIndex].position, bulletSpawnPoints [bulletSpawnPointIndex].rotation) as GameObject).GetComponent<PrototypeBullet> ();
-			bullet.owner = this.transform;
+			DamageDealer damager = (Instantiate (bulletPrefab, bulletSpawnPoints[bulletSpawnPointIndex].position, bulletSpawnPoints[bulletSpawnPointIndex].rotation) as GameObject).GetComponent<DamageDealer> ();
+			damager.damageSource = this.gameObject;
+            damager.excludedTransforms.Add(dino.transform);
 			lastFired = Time.time;
 
             return true;

@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
-using System.Collections;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 public class MapManager : MonoBehaviour {
 
@@ -12,19 +14,48 @@ public class MapManager : MonoBehaviour {
     public GameObject dinoWorldUIPrefab;
 
     public PlayerData[] players;
+    private int alivePlayers;
+
+    public Timer timer;
+    public Text displayText;
+
+    private float lastRestartPressTime = 0;
 
 	// Use this for initialization
 	void OnEnable () {
         instance = this;
+        InputManager.AddButtonDelegate("Cancel", Restart);
 	}
 
     void OnDisable() {
         instance = null;
+        InputManager.RemoveButtonDelegate("Cancel", Restart);
+    }
+
+    void Restart(ButtonState button) {
+        if (button.Pressed) {
+            if (lastRestartPressTime != 0 && (Time.time - lastRestartPressTime <= 0.5f)) {
+                SceneManager.LoadScene("MenuTest");
+            } else {
+                lastRestartPressTime = Time.time;
+            }
+        }
     }
 
     void Start() {
+        InstanceSpawnPlayers();
+        alivePlayers = players.Length;
+    }
+
+    public static void SpawnPlayers() {
+        if (instance) {
+            instance.InstanceSpawnPlayers();
+        }
+    }
+
+    private void InstanceSpawnPlayers() {
         players = new PlayerData[PlayerManager.PlayerCount];
-        for(int i = 1; i <= PlayerManager.PlayerCount; i++) {
+        for (int i = 1; i <= PlayerManager.PlayerCount; i++) {
             players[i - 1] = SpawnPlayer(i);
         }
         for (int i = 1; i <= PlayerManager.PlayerCount; i++) {
@@ -34,8 +65,6 @@ public class MapManager : MonoBehaviour {
                 }
             }
         }
-
-
     }
 
     private PlayerData SpawnPlayer(int playerNumber) {
@@ -116,6 +145,9 @@ public class MapManager : MonoBehaviour {
         data.hudUIObject = hudUIObject;
         data.dinoUI = dinoUI;
 
+        //Assign dino death delegate
+        data.dinoCharacter.Death += OnPlayerDeath;
+
         // And return it
         return data;
     }
@@ -140,5 +172,63 @@ public class MapManager : MonoBehaviour {
 
         // Add it to the player data.
         data.AddWorldUIData(worldUIObject, worldDinoUI);
+    }
+
+    private void OnPlayerDeath() {
+        alivePlayers--;
+
+        if (alivePlayers == 1) {
+            EndMatchByElimination();
+        }
+    }
+
+    private void EndMatchByElimination() {
+        timer.enabled = false;
+        timer.StopAllCoroutines();
+        PlayerData winner = null;
+        foreach (PlayerData data in players) {
+            if (data.dinoCharacter.CurrentHealth > 0) {
+                winner = data;
+            }
+        }
+        displayText.text = "W i n n e r :  P " +  winner.playerNumber + "\nP r e s s  E S C  t w i c e\nt o  R e s t a r t";
+    }
+
+    public void EndMatchByTimeout() {
+        //Determine time out winners.
+        List<PlayerData> winners = new List<PlayerData>();
+        float winnerHealth = 0f;
+        foreach (PlayerData data in players) {
+            if (winners.Count == 0 && data.dinoCharacter.CurrentHealth > 0) {
+                winners.Add(data);
+                winnerHealth = data.dinoCharacter.CurrentHealth;
+            } else if (data.dinoCharacter.CurrentHealth == winnerHealth) {
+                winners.Add(data);
+            } else if (data.dinoCharacter.CurrentHealth > winnerHealth) {
+                winners.Clear();
+                winners.Add(data);
+                winnerHealth = data.dinoCharacter.CurrentHealth;
+            }
+        }
+
+        //Kill those who didn't win.
+        foreach (PlayerData data in players) {
+            if (!winners.Contains(data)) {
+                data.dinoCharacter.CurrentHealth = 0;
+            }
+        }
+
+        //Tell em who won.
+        if (winners.Count == 1) {
+            displayText.text = "W i n n e r :  P " + winners[0].playerNumber;
+        } else {
+            string s = "T i e :";
+            foreach (PlayerData data in winners) {
+                s += "  P " + data.playerNumber;
+            }
+            displayText.text = s;
+        }
+
+        displayText.text += "\nP r e s s  E S C  t w i c e\nt o  R e s t a r t";
     }
 }

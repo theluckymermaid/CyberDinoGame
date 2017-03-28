@@ -9,6 +9,7 @@ public class StartCountdown : MonoBehaviour
 {
 	public Text countdownTxt;
 	public int seconds;
+	public GameObject timer;
 
 	void Start () 
 	{
@@ -36,5 +37,6 @@ public class StartCountdown : MonoBehaviour
 
 		//Unpause
 		Time.timeScale = 1;
+		timer.SetActive (true);
 	}
 }

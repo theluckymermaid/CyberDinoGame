@@ -6,26 +6,43 @@ using UnityEngine.UI;
 public class Timer : MonoBehaviour {
 
     public float myTimer = 300;
-    public Text timerText;
+    Text timerText;
 
     // Use this for initialization
     void Start()
     {
         timerText = GetComponent<Text>();
+
+		StartCoroutine(Countdown());
+
     }
+		
 
-    // Update is called once per frame
-    void Update()
-    {
-        myTimer -= Time.deltaTime;
-        string minutes = Mathf.Floor((int)myTimer / 60).ToString();
-        string seconds = Mathf.Floor(myTimer % 60).ToString("00");
-        timerText.text = minutes + ":" + seconds;
+	IEnumerator Countdown()
+	{
+		while (myTimer > -1) 
+		{
+			if (myTimer == 0)
+				Ending ();
+			else 
+			{
+				//timerText.text = myTimer.ToString ();
+				string minutes = Mathf.Floor((int)myTimer / 60).ToString();
+				string seconds = Mathf.Floor(myTimer % 60).ToString("0 0");
+				timerText.text = minutes + " : " + seconds;
+			}
 
-        if(myTimer < 1)
-        {
-            myTimer = 1;
-        }
+			myTimer--;
+			yield return new WaitForSecondsRealtime(1);
+		}
+
+		//timerText.text = "";
+	}
+
+	//game Ending
+	void Ending()
+	{
+        MapManager.instance.EndMatchByTimeout();
     }
 
 }

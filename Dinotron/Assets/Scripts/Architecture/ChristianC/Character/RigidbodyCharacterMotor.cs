@@ -45,7 +45,7 @@ public class RigidbodyCharacterMotor : DinoCharacterMotor {
 
     [Header("[TEMPORARY FUNCTIONALITY] Art Object Tilting Settings")]
     [Tooltip("Is tilting the art object enabled?")]
-    public bool enableArtTilt = true;
+    public bool enableArtTilt = false;
     [Tooltip("The transform of the GameObject that contains the art assets. Assumed to be parented to this object. Currently used for groundNormal tilt.")]
     public Transform artObjectTransform;
     [Tooltip("How fast the art transform tilts to match the ground angle in degrees/second. Set to 0 to disable.")]
@@ -379,15 +379,15 @@ public class RigidbodyCharacterMotor : DinoCharacterMotor {
         // Art tilt logic //
         ////////////////////
 
-        //Art rotation target
-        Quaternion artRotationTarget = Quaternion.identity;
-
         if (enableArtTilt && IsTouchingGround) {
-            artRotationTarget = Quaternion.FromToRotation(Vector3.up, tr.InverseTransformDirection(groundNormal));
-        }
+            //Art rotation target
+            Quaternion artRotationTarget = Quaternion.identity;
 
-        //Rotate the art object's local rotation according to the ground tilt.
-        artObjectTransform.localRotation = Quaternion.RotateTowards(artObjectTransform.localRotation, artRotationTarget, artTiltSpeed * deltaTime);
+            artRotationTarget = Quaternion.FromToRotation(Vector3.up, tr.InverseTransformDirection(groundNormal));
+
+            //Rotate the art object's local rotation according to the ground tilt.
+            artObjectTransform.localRotation = Quaternion.RotateTowards(artObjectTransform.localRotation, artRotationTarget, artTiltSpeed * deltaTime);
+        }
 
         /////////////////////////
         // Jumping and Gravity //
@@ -645,8 +645,8 @@ public class RigidbodyCharacterMotor : DinoCharacterMotor {
     }
 
     [Header("[DEBUG]")]
-    public bool showDebugInfo = true;
-    public bool showCollisionInfo = true;
+    public bool showDebugInfo = false;
+    public bool showCollisionInfo = false;
 
     void OnGUI() {
         if (showDebugInfo) {

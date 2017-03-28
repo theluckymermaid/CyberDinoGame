@@ -37,6 +37,10 @@ public class PlayerManager : MonoBehaviour {
         return instance.config.playerUILayers[playerNumber - 1];
     }
 
+    public static LayerMask GetPlayerAimMask() {
+        return instance.config.playerAimMask;
+    }
+
     public PlayerManagerConfig config;
 
     [SerializeField]
@@ -89,7 +93,7 @@ public class PlayerManager : MonoBehaviour {
     }
 
     void OnValidate() {
-        if (Application.isPlaying) {
+        if (Application.isPlaying && this == instance) {
             PlayerCount = playerCount;
         } else {
             playerCount = Mathf.Min(4, Mathf.Max(1, playerCount));

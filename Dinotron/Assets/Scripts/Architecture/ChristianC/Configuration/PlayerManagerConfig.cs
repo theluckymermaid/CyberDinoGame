@@ -12,6 +12,7 @@ public class PlayerManagerConfig : ScriptableObject {
     public PlayerCamerasConfig[] cameraLayouts;
     public LayerMask[] playerCameraLayerMasks;
     public int[] playerUILayers;
+    public LayerMask playerAimMask;
 
 #if UNITY_EDITOR
     [MenuItem("Dinotron/Create Asset/Player Manager/PlayerManagerConfig")]

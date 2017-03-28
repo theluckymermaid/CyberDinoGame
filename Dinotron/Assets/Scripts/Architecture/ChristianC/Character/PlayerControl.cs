@@ -37,23 +37,25 @@ public class PlayerControl : MonoBehaviour {
     }
 
     private void MoveInput(float horz, float vert) {
-        dino.moveInput.x = horz;
-        dino.moveInput.z = vert;
+        if (cameraTransform) {
+            dino.moveInput.x = horz;
+            dino.moveInput.z = vert;
+        
+            if (!dino.IsSprinting) {
+                //Allow for walking slowly when the joystick isn't being pushed to the edge
+                dino.moveInput *= dino.moveInput.magnitude;
+                dino.moveInput *= 3;
 
-        if (!dino.IsSprinting) {
-            //Allow for walking slowly when the joystick isn't being pushed to the edge
-            dino.moveInput *= dino.moveInput.magnitude;
-            dino.moveInput *= 3;
-
-            if (dino.moveInput.magnitude > 1f) {
+                if (dino.moveInput.magnitude > 1f) {
+                    dino.moveInput.Normalize();
+                }
+            } else {
                 dino.moveInput.Normalize();
             }
-        } else {
-            dino.moveInput.Normalize();
+        
+            Quaternion rotation = Quaternion.Euler(0, cameraTransform.rotation.eulerAngles.y, 0);
+            dino.moveInput = rotation * dino.moveInput;
         }
-
-        Quaternion rotation = Quaternion.Euler(0, cameraTransform.rotation.eulerAngles.y, 0);
-        dino.moveInput = rotation * dino.moveInput;
     }
 
     private void JumpInput(ButtonState button) {
@@ -76,11 +78,11 @@ public class PlayerControl : MonoBehaviour {
     private void Update() {
         //Aim our weapon!
         Vector3 startPoint = tr.position + playerCamera.targetOffset;
-        RaycastHit[] hits = Physics.RaycastAll(startPoint, cameraTransform.forward, maxAimRaycastDistance);
+        RaycastHit[] hits = Physics.RaycastAll(startPoint, cameraTransform.forward, maxAimRaycastDistance, PlayerManager.GetPlayerAimMask());
         Vector3 aimPoint = Vector3.zero;
         if (hits.Length > 0) {
             foreach (RaycastHit hit in hits) {
-                if (!hit.collider.isTrigger && hit.transform != tr && !hit.transform.IsChildOf(tr)) {
+                if (!hit.transform.IsChildOf(tr)) {
                     aimPoint = hit.point;
                 }
             }

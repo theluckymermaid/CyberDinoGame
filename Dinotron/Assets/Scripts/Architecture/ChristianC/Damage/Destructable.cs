@@ -35,8 +35,4 @@ public class Destructable : MonoBehaviour, IHitbox {
             renderer.material = material;
         }
     }
-
-    public Vector3 GetPosition() {
-        return transform.position;
-    }
 }

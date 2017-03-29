@@ -6,8 +6,6 @@ public class HitboxDinoBody : MonoBehaviour, IHitbox {
 
     public DinoCharacter dino;
     public bool weakPoint;
-    private Transform tr;
-    private new Collider collider;
 
     public event Action<float> DamageTaken;
 
@@ -19,10 +17,6 @@ public class HitboxDinoBody : MonoBehaviour, IHitbox {
         return (weakPoint) ? 1 : 2;
     }
 
-    public Vector3 GetPosition() {
-        return collider.bounds.center;
-    }
-
     public void TakeDamage(float damage) {
         float d = (weakPoint) ? damage * 2 : damage;
         dino.CurrentHealth -= d;
@@ -30,9 +24,4 @@ public class HitboxDinoBody : MonoBehaviour, IHitbox {
             DamageTaken(d);
         }
     }
-
-    void Start () {
-        tr = transform;
-        collider = GetComponent<Collider>();
-	}
 }

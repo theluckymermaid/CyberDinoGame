@@ -7,14 +7,14 @@ public class DamagingDinosaur : MonoBehaviour
     public float damage;
     public float increasingDamage = 20f;
     public int maxDamage = 100;
-    SkinnedMeshRenderer dinosaur;
+    //SkinnedMeshRenderer dinosaur;
     public bool armor;
 
     Rigidbody rig;
 
     void Start()
     {
-        dinosaur = GetComponent<SkinnedMeshRenderer>();
+        //dinosaur = GetComponent<SkinnedMeshRenderer>();
         rig = GetComponent<Rigidbody>();
         if (armor == true)
         {

@@ -26,12 +26,10 @@ public class PlayerDinoCamera : MonoBehaviour {
     private float verticalAngle;
 
     private Transform tr;
-    private Camera playerCamera;
 
 	// Use this for initialization
 	void Start () {
         tr = transform;
-        playerCamera = GetComponent<Camera>();
         horizontalAngle = tr.eulerAngles.y;
         verticalAngle = tr.eulerAngles.x;
 

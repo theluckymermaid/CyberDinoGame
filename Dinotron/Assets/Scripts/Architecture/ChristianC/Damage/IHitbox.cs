@@ -24,9 +24,4 @@ public interface IHitbox {
     /// For example: when a bullet hits multiple hitboxes at once, the hitbox with the lowest priority take damage and the rest are uneffected.
     /// </summary>
     int GetHitPriority();
-
-    /// <summary>
-    /// The position of the rigidbody. We want to hit the closest one first.
-    /// </summary>
-    Vector3 GetPosition();
 }

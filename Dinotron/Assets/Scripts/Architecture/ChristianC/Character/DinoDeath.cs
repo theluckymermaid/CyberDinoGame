@@ -19,7 +19,7 @@ public class DinoDeath : MonoBehaviour {
 
     void IDied() {
         //Spawn Health Pack here!
-        GameObject explosion = Instantiate(explosionPrefab, GetComponent<Collider>().bounds.center, Quaternion.identity) as GameObject;
+        Instantiate(explosionPrefab, GetComponent<Collider>().bounds.center, Quaternion.identity);
 
         gameObject.SetActive(false);
     }

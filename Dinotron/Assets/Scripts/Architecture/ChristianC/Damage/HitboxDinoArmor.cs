@@ -72,8 +72,4 @@ public class HitboxDinoArmor : MonoBehaviour, IHitbox {
         yield return new WaitForSeconds(debrisTime);
         Destroy(gameObject);
     }
-
-    public Vector3 GetPosition() {
-        return collider.bounds.center;
-    }
 }

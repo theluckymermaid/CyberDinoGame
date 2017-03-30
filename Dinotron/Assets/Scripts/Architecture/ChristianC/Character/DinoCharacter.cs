@@ -99,6 +99,7 @@ public class DinoCharacter : MonoBehaviour {
     public Action<float> HealthChangePercentage;
     public Action<float, float> HealthChange;
     public Action Death;
+    public static Action<DinoCharacter> DinoDeath;
 
     public Action<float> HeatChangePercentage;
     public Action<float, float> HeatChange;
@@ -116,6 +117,9 @@ public class DinoCharacter : MonoBehaviour {
         }
 
         if (currentHealth == 0 && Death != null) {
+            if (DinoDeath != null) {
+                DinoDeath(this);
+            }
             Death();
         }
     }

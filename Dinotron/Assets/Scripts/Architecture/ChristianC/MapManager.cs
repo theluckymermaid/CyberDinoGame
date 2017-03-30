@@ -25,11 +25,13 @@ public class MapManager : MonoBehaviour {
 	void OnEnable () {
         instance = this;
         InputManager.AddButtonDelegate("Cancel", Restart);
+        DinoCharacter.DinoDeath += OnDinoDeath;
 	}
 
     void OnDisable() {
         instance = null;
         InputManager.RemoveButtonDelegate("Cancel", Restart);
+        DinoCharacter.DinoDeath -= OnDinoDeath;
     }
 
     void Restart(ButtonState button) {
@@ -145,9 +147,6 @@ public class MapManager : MonoBehaviour {
         data.hudUIObject = hudUIObject;
         data.dinoUI = dinoUI;
 
-        //Assign dino death delegate
-        data.dinoCharacter.Death += OnPlayerDeath;
-
         // And return it
         return data;
     }
@@ -174,11 +173,18 @@ public class MapManager : MonoBehaviour {
         data.AddWorldUIData(worldUIObject, worldDinoUI);
     }
 
-    private void OnPlayerDeath() {
-        alivePlayers--;
+    private void OnDinoDeath(DinoCharacter dino) {
+        PlayerControl playerControl = dino.GetComponent<PlayerControl>();
+        if (playerControl != null) {
+            alivePlayers--;
 
-        if (alivePlayers == 1) {
-            EndMatchByElimination();
+            PlayerData data = players[playerControl.playerNumber - 1];
+            data.alive = false;
+            data.deathTime = Time.time;
+
+            if (alivePlayers == 1) {
+                EndMatchByElimination();
+            }
         }
     }
 

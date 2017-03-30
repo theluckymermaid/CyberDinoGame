@@ -4,6 +4,8 @@ using System.Collections;
 public class PlayerData : MonoBehaviour {
 
     public int playerNumber;
+    public bool alive = true;
+    public float deathTime = 0;
 
     public GameObject dinoObject;
     public DinoCharacter dinoCharacter;

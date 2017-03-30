@@ -38,7 +38,7 @@ public class Bullet : MonoBehaviour {
     }
 
     void OnCollision(Collider collider) {
-        if (damageDealer.CanHit(collider.transform)) {
+        if (!damageDealer.IsTransformExcluded(collider.transform)) {
             RemoveBullet();
         }
     }

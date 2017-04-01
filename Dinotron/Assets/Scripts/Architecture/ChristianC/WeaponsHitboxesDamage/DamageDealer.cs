@@ -35,11 +35,11 @@ public class DamageDealer : MonoBehaviour {
 
 
     protected class HitboxEntry {
-        public readonly IHitbox hitbox;
+        public readonly Hitbox hitbox;
         public readonly Vector3 collisionPoint;
         public readonly float distance;
 
-        public HitboxEntry(IHitbox hitbox, Vector3 collisionPoint, float distance) {
+        public HitboxEntry(Hitbox hitbox, Vector3 collisionPoint, float distance) {
             this.hitbox = hitbox;
             this.collisionPoint = collisionPoint;
             this.distance = distance;
@@ -82,7 +82,7 @@ public class DamageDealer : MonoBehaviour {
     }
 
     protected void OnCollide(Collider collider, Vector3 collisionPoint, bool hasPoint = false) {
-        IHitbox hitbox = collider.GetComponent(typeof(IHitbox)) as IHitbox;
+        Hitbox hitbox = collider.GetComponent<Hitbox>();
         if (hitbox != null && !hitboxes.Exists(entry => entry.hitbox == hitbox) && hitbox.CanBeHit(this) && !IsTransformExcluded(collider.transform)) {
             Vector3 direction = tr.position - prevPosition;
 
@@ -146,7 +146,7 @@ public class DamageDealer : MonoBehaviour {
         }
 
         if (bestEntry != null) {
-            bestEntry.hitbox.TakeDamage(damage);
+            bestEntry.hitbox.TakeDamage(this);
         }
 
         coroutineResolveDamage = null;

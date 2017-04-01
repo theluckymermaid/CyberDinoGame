@@ -3,7 +3,7 @@ using System.Collections;
 using System;
 
 [RequireComponent(typeof(Rigidbody))]
-public class HitboxDinoArmor : MonoBehaviour, IHitbox {
+public class HitboxDinoArmor : Hitbox {
 
     public float health = 0;
     public float maxHealth = 200;
@@ -16,8 +16,6 @@ public class HitboxDinoArmor : MonoBehaviour, IHitbox {
     private new Renderer renderer;
     private Material material;
     private Color startingColor;
-
-    public event Action<float> DamageTaken;
 
     // Use this for initialization
     void Start() {
@@ -35,17 +33,17 @@ public class HitboxDinoArmor : MonoBehaviour, IHitbox {
         startingColor = material.color;
     }
 
-    public int GetHitPriority() {
+    public override int GetHitPriority() {
         return 0;
     }
 
-    public bool CanBeHit(DamageDealer damageDealer) {
+    public override bool CanBeHit(DamageDealer damageDealer) {
         return health > 0;
     }
 
-    public void TakeDamage(float damage) {
+    protected override void ResolveDamage(DamageDealer damageDealer) {
 
-        health -= damage;
+        health -= damageDealer.damage;
         float t = (1 - (health / maxHealth)) * 0.5f;
         material.color = Color.Lerp(startingColor, Color.black, t);
 
@@ -61,10 +59,6 @@ public class HitboxDinoArmor : MonoBehaviour, IHitbox {
 
             //And poof after a while.
             StartCoroutine(Dissapear());
-        }
-
-        if (DamageTaken != null) {
-            DamageTaken(damage);
         }
     }
 

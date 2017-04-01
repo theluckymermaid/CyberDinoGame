@@ -2,27 +2,21 @@
 using System.Collections;
 using System;
 
-public class Destructable : MonoBehaviour, IHitbox {
+public class Destructable : Hitbox {
 
     public int hitPriority = -10;
     public float health = 1000;
 
-    public event Action<float> DamageTaken;
-
-    public bool CanBeHit(DamageDealer damageDealer) {
+    public override bool CanBeHit(DamageDealer damageDealer) {
         return true;
     }
 
-    public int GetHitPriority() {
+    public override int GetHitPriority() {
         return hitPriority;
     }
 
-    public void TakeDamage(float damage) {
-        health -= damage;
-
-        if (DamageTaken != null) {
-            DamageTaken(damage);
-        }
+    protected override void ResolveDamage(DamageDealer damageDealer) {
+        health -= damageDealer.damage;
 
         if (health <= 0) {
             gameObject.SetActive(false);

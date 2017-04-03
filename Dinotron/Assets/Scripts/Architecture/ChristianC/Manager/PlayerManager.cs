@@ -2,6 +2,8 @@
 using UnityEngine.SceneManagement;
 using System.Collections;
 
+//This class exists to grab data from a config asset as well as to keep track of player data between scenes.
+// Keeps track of each player's selected dino.
 public class PlayerManager : MonoBehaviour {
 
     private static PlayerManager instance = null;

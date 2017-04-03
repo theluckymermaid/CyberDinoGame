@@ -5,6 +5,7 @@ using System.Collections;
 using UnityEditor;
 #endif
 
+//Right now this asset is not used, but it may be in the near future.
 public class DinoConfig : ScriptableObject {
 
     public GameObject dinoPrefab;
@@ -17,6 +18,7 @@ public class DinoConfig : ScriptableObject {
     public float attackRating;
     public float speedRating;
 
+    // Editor only code.
 #if UNITY_EDITOR
     [MenuItem("Dinotron/Create Asset/DinoConfig")]
     public static void CreatePlayerInputConfig() {

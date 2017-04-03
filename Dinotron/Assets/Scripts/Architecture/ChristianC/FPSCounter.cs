@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+//Sets the target FPS (default 90) as well as keeps track a running track of the game's reported alpha time and displays it on screen.
 public class FPSCounter : MonoBehaviour {
 
     public int targetFrameRate = 90;

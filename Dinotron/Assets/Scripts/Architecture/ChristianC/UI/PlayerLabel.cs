@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 
+//Flips through an array of Sprites to get the right one based on player number.
 public class PlayerLabel : MonoBehaviour {
 
     public WorldDinoUI worldDinoUI;

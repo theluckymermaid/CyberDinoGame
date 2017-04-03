@@ -58,9 +58,11 @@ public class SweepColliderForwards : MonoBehaviour {
         }
         transformToRotate.rotation = rotation;
 
+        //Scale up our settings so they are what's needed to acheieve a certain size in world space.
         Vector3 scale = transformToRotate.lossyScale;
         Vector3 size = Vector3.zero;
         if (scale.x != 0) {
+            //Inverse scaling is a go!
             size.x = diameter / scale.x;
         }
         if (scale.y != 0) {

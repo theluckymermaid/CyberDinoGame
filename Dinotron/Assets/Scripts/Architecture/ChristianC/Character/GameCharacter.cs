@@ -2,11 +2,15 @@
 using System;
 using System.Collections;
 
+// This script holds, keeps track of, and sends delegates for a GameCharacter's vital statisics.
+// It also handles the interpretation of input.
+// If a GameCharacter does not also have a CharacterMotor component on it, it cannot move.
+// If a GameCharacter does not have a CharacterGun and a Weapon, it cannot fire.
 public class GameCharacter : MonoBehaviour {
 
     public CharacterMotor motor;
 
-    //Inputs
+    // Inputs
     [HideInInspector]
     public Vector3 moveInput = Vector3.zero;
     [HideInInspector]
@@ -21,14 +25,17 @@ public class GameCharacter : MonoBehaviour {
 
     public bool IsSprinting
     {
+        // We can't sprint if we're overheated or if we don't have any move input!
         get { return !overheated && sprintInput && moveInput != Vector3.zero; }
     }
 
+    // Movement settings
     public float speed;
     public float sprintSpeed;
     public float sprintHeatCostPerSecond;
     public float jumpHeight;
 
+    // Health settings
     [SerializeField]
     private float currentHealth;
     [SerializeField]
@@ -54,6 +61,7 @@ public class GameCharacter : MonoBehaviour {
         }
     }
 
+    // Heat settings
     [SerializeField]
     private float currentHeat;
     [SerializeField]
@@ -95,9 +103,12 @@ public class GameCharacter : MonoBehaviour {
         get { return overheated; }
     }
 
+
+    //Gun and weapon settings
     public CharacterGun gun;
     public Weapon weapon;
 
+    // Delegates for Health, Heat, and when the weapon gets fired.
     public Action<float> HealthChangePercentage;
     public Action<float, float> HealthChange;
     public Action Death;
@@ -109,6 +120,7 @@ public class GameCharacter : MonoBehaviour {
 
     public Action<Weapon> WeaponFired;
 
+    // Update our health and notify any listeners of the changes.
     private void UpdateHealthChange() {
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 
@@ -117,9 +129,12 @@ public class GameCharacter : MonoBehaviour {
         }
 
         if (HealthChangePercentage != null) {
-            HealthChangePercentage.DynamicInvoke(currentHealth / maxHealth);
+            HealthChangePercentage(currentHealth / maxHealth);
         }
 
+        // If we die, send out both a static delegate and an instance delegate.
+        // The static delegate is for anything that needs to know when a character has died.
+        // The instance delegate is for any components that are attached to the character.
         if (currentHealth == 0 && Death != null) {
             if (CharacterDeath != null) {
                 CharacterDeath(this);
@@ -128,6 +143,7 @@ public class GameCharacter : MonoBehaviour {
         }
     }
 
+    // Update our heat, make any changes to our state that need to be made, and notify our listeners of those changes.
     private void UpdateHeatChange() {
         currentHeat = Mathf.Clamp(currentHeat, 0, maxHeat);
 
@@ -158,6 +174,7 @@ public class GameCharacter : MonoBehaviour {
         }
     }
 
+    // Make sure we're all good to go!
     void Start() {
         UpdateHealthChange();
         UpdateHeatChange();
@@ -189,11 +206,13 @@ public class GameCharacter : MonoBehaviour {
         if (gun != null && weapon != null && weapon.isActiveAndEnabled) {
             float heatChange;
             bool weaponFired;
+            //We can't shoot if we're overheated!
             bool firing = (Overheated) ? false : fireInput;
             weapon.UpdateState(firing, gun.bulletSpawnPoints, out heatChange, out weaponFired);
             CurrentHeat += heatChange;
 
             if (weaponFired && WeaponFired != null) {
+                // This delegate is only to be fired when the character actually shoots something, not for every frame the fire input is held down.
                 WeaponFired(weapon);
             }
         }
@@ -201,11 +220,13 @@ public class GameCharacter : MonoBehaviour {
 
     protected virtual void UpdateHeat() {
         // Update heat cooling
+        // If we got overheated, then we need to wait before we can do cooling again.
         if (!overheated || (overheated && (Time.time >= overheatedAtTime + overheatWaitPeriod))) {
             CurrentHeat -= heatCooldownPerSecond * Time.deltaTime;
         }
     }
 
+    
     void OnValidate() {
 
         speed = Mathf.Max(0, speed);
@@ -213,9 +234,11 @@ public class GameCharacter : MonoBehaviour {
         sprintHeatCostPerSecond = Mathf.Max(0, sprintHeatCostPerSecond);
 
         if (Application.isPlaying) {
+            // Code that happens during play.
             CurrentHealth = currentHealth;
             CurrentHeat = currentHeat;
         } else {
+            // Code that happens when not in play.
             maxHealth = Mathf.Max(0, maxHealth);
             currentHealth = maxHealth;
 
@@ -228,6 +251,7 @@ public class GameCharacter : MonoBehaviour {
         overheatWaitUntilPercentage = Mathf.Clamp01(overheatWaitUntilPercentage);
     }
 
+    //Debug information that only gets compiled if we're running this script in the editor.
 #if UNITY_EDITOR
     public bool showDebugInfo = false;
 

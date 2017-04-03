@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 
+//Draw the game character's health.
 public class HealthBar : MonoBehaviour {
 
     public DinoUI dinoUI;

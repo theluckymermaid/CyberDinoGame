@@ -34,6 +34,7 @@ public class WorldDinoUI : DinoUI {
 	
 	// Update is called once per frame
 	void LateUpdate () {
+        //Turns out the best way to get a GUI to face the camera is to simply match the camera's world rotation.
         tr.localPosition = offset;
         tr.rotation = cameraTransform.rotation;
 	}

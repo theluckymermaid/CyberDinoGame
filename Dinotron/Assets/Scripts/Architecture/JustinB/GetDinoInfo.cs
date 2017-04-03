@@ -6,9 +6,10 @@ public class GetDinoInfo : MonoBehaviour {
 	//Creates 4 lists to hold the information of any dinosaur prefab added to the game object list "dinosaurs"
 	//This helps to reduce memory usage because the getComponent method is very system taxing.
 	public List<GameObject> numberOfDinosaurs = new List<GameObject>();
-	private List<GameCharacter> dinoStatistics = new List<GameCharacter>();
-	private List<SimpleWeapon> dinoWeapons = new List<SimpleWeapon>();
+	public List<GameCharacter> dinoStatistics = new List<GameCharacter>();
+	public List<SimpleWeapon> dinoWeapons = new List<SimpleWeapon>();
 	private List<string> dinoNames = new List<string> ();
+	public List<GameObject> panels = new List<GameObject> ();
 
 	//Key Codes for controlling the script
 	[SerializeField]
@@ -54,6 +55,24 @@ public class GetDinoInfo : MonoBehaviour {
 		//attaches highlightTransformer to the RectTransform of the selected object (in this case the highlight box object)
 		highlightTranformer = highlightbox.GetComponent<RectTransform> ();
 		highlightPosition = highlightTranformer.position;
+		if (sendHealth != null) {
+			sendHealth (dinoStatistics [currentPosition].MaxHealth);
+		}
+		if (sendHeat != null) {
+			sendHeat (dinoStatistics [currentPosition].MaxHeat);
+		}
+		if (sendSpeed != null) {
+			sendSpeed (dinoStatistics [currentPosition].speed);
+		}
+		if (sendDamage != null) {
+			sendDamage (dinoWeapons [currentPosition].damage);
+		}
+		if (sendROF != null) {
+			sendROF (dinoWeapons [currentPosition].fireDelay);
+		}
+		if (sendName != null) {
+			sendName (numberOfDinosaurs [currentPosition].transform.name);
+		}
 	}
 	void Update(){
 		Selection ();
@@ -105,31 +124,15 @@ public class GetDinoInfo : MonoBehaviour {
 	}
 	public void moveHighlightBox(KeyCode keyPressed) //controls the position of the highlighter box
 	{
-		Debug.Log ("Made it");
 		if (keyPressed == upKey) {
-			highlightPosition.Set (highlightPosition.x, highlightPosition.y + 150f, highlightPosition.z); //shift the position of the highlight box up one
-			highlightTranformer.transform.position = highlightPosition;
+			highlightTranformer.localPosition = panels[currentPosition].transform.localPosition; //shift the position of the highlight box up one
 		} else if (keyPressed == downKey) {
-			highlightPosition.Set (highlightPosition.x, highlightPosition.y - 150f, highlightPosition.z); //shift the position of the highlight box down one
-			highlightTranformer.transform.position = highlightPosition;
+			highlightTranformer.localPosition = panels [currentPosition].transform.localPosition;
 		} else if (keyPressed == leftKey) {
-			if ((currentPosition) % numberOfCols == numberOfCols - 1 && currentPosition != numberOfDinosaurs.Count -1) { //if the previous position was the biginning of a new row
-				highlightPosition.Set (highlightPosition.x + (175.5f* (numberOfCols -1)), highlightPosition.y + 150f, highlightPosition.z); //set position of the highlighter to the end of the previous row.
-				highlightTranformer.transform.position = highlightPosition;
-			} else {
-				highlightPosition.Set (highlightPosition.x - 175.5f, highlightPosition.y, highlightPosition.z); //set postition of the highlighter one to the left
-				highlightTranformer.transform.position = highlightPosition;
-			}
+			highlightTranformer.localPosition = panels [currentPosition].transform.localPosition;
 		} else if (keyPressed == rightKey) {
-			if ((currentPosition) % (numberOfCols) == 0 && currentPosition != 0) { //if the previous position was the end of a new row
-				highlightPosition.Set (highlightPosition.x - (175.5f* (numberOfCols -1)), highlightPosition.y -  150f, highlightPosition.z); //set position of the highlighter to the beginning of the new row
-				highlightTranformer.transform.position = highlightPosition;
-				Debug.Log ("position1");
-			} else {
-				highlightPosition.Set (highlightPosition.x + 175.5f, highlightPosition.y, highlightPosition.z); //set position of the highlighter one to the right
-				highlightTranformer.transform.position = highlightPosition;
-				Debug.Log ("position2");
-			}
+			highlightTranformer.localPosition = panels [currentPosition].transform.localPosition;
 		}
+
 	}
 }

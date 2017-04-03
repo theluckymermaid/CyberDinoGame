@@ -16,19 +16,25 @@ public class SliderManager : MonoBehaviour {
 		delegateSource = signalSource.GetComponent<GetDinoInfo> ();
 		if (stat == statCode.Health) {
 			delegateSource.sendHealth += changeStat;
+			mySlider.value = delegateSource.dinoStatistics [0].MaxHealth;
 		}
 		if (stat == statCode.Heat) {
 			delegateSource.sendHeat += changeStat;
+			mySlider.value = delegateSource.dinoStatistics [0].MaxHeat;
 		}
 		if (stat == statCode.Speed) {
 			delegateSource.sendSpeed += changeStat;
+			mySlider.value = delegateSource.dinoStatistics [0].speed;
 		}
 		if (stat == statCode.Damage) {
 			delegateSource.sendDamage += changeStat;
+			mySlider.value = delegateSource.dinoWeapons [0].damage;
 		}
 		if (stat == statCode.ROF) {
 			delegateSource.sendROF += changeStat;
+			mySlider.value = delegateSource.dinoWeapons [0].fireDelay;
 		}
+
 	}
 	public void changeStat(float value) //overloaded method that changes the stat for the slider if the stat it's listening for is an int
 	{																  //PlayerNumber is a enum type from DinoManager

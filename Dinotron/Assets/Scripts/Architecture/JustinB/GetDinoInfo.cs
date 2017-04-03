@@ -107,18 +107,29 @@ public class GetDinoInfo : MonoBehaviour {
 	{
 		Debug.Log ("Made it");
 		if (keyPressed == upKey) {
-			highlightPosition.Set (highlightPosition.x, highlightPosition.y + 150f, highlightPosition.z);
+			highlightPosition.Set (highlightPosition.x, highlightPosition.y + 150f, highlightPosition.z); //shift the position of the highlight box up one
 			highlightTranformer.transform.position = highlightPosition;
 		} else if (keyPressed == downKey) {
-			highlightPosition.Set (highlightPosition.x, highlightPosition.y - 150f, highlightPosition.z);
+			highlightPosition.Set (highlightPosition.x, highlightPosition.y - 150f, highlightPosition.z); //shift the position of the highlight box down one
 			highlightTranformer.transform.position = highlightPosition;
 		} else if (keyPressed == leftKey) {
-			highlightPosition.Set (highlightPosition.x -175.5f, highlightPosition.y, highlightPosition.z);
-			highlightTranformer.transform.position = highlightPosition;
+			if ((currentPosition) % numberOfCols == numberOfCols - 1 && currentPosition != numberOfDinosaurs.Count -1) { //if the previous position was the biginning of a new row
+				highlightPosition.Set (highlightPosition.x + (175.5f* (numberOfCols -1)), highlightPosition.y + 150f, highlightPosition.z); //set position of the highlighter to the end of the previous row.
+				highlightTranformer.transform.position = highlightPosition;
+			} else {
+				highlightPosition.Set (highlightPosition.x - 175.5f, highlightPosition.y, highlightPosition.z); //set postition of the highlighter one to the left
+				highlightTranformer.transform.position = highlightPosition;
+			}
 		} else if (keyPressed == rightKey) {
-			highlightPosition.Set (highlightPosition.x +175.5f, highlightPosition.y, highlightPosition.z);
-			highlightTranformer.transform.position = highlightPosition;
-
+			if ((currentPosition) % (numberOfCols) == 0 && currentPosition != 0) { //if the previous position was the end of a new row
+				highlightPosition.Set (highlightPosition.x - (175.5f* (numberOfCols -1)), highlightPosition.y -  150f, highlightPosition.z); //set position of the highlighter to the beginning of the new row
+				highlightTranformer.transform.position = highlightPosition;
+				Debug.Log ("position1");
+			} else {
+				highlightPosition.Set (highlightPosition.x + 175.5f, highlightPosition.y, highlightPosition.z); //set position of the highlighter one to the right
+				highlightTranformer.transform.position = highlightPosition;
+				Debug.Log ("position2");
+			}
 		}
 	}
 }

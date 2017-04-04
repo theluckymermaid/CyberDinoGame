@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+//Script that lisens for a gameCharacter's death.
+//Mean to be attached to the object with the Game Character on it.
+//Right now it just makes an explosion prefab and disables it's game object.
 [RequireComponent(typeof(GameCharacter))]
 public class CharacterDeath : MonoBehaviour {
 

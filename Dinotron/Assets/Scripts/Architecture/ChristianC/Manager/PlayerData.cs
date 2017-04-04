@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+//A class to hold all the information in a scene about any player that is spawned by the MapManager.
 public class PlayerData : MonoBehaviour {
 
     public int playerNumber;

@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 
+//Flashes the screen using an overlay graphic every time a Game Character gets hurt.
 public class HurtOverlay : MonoBehaviour {
 
     public DinoUI dinoUI;

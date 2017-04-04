@@ -9,9 +9,9 @@ public class ChangeName : MonoBehaviour {
 
 	void Start () {
 		delegateSource = signalSource.GetComponent<GetDinoInfo> (); //sets delegate source to the GetDinoInfo Script of the attached object
-		delegateSource.sendName += nameChange; //when the player switches dinosaurs, this delegate subscription recieves the name of the new dionsaur
+		delegateSource.sendName += NameChange; //when the player switches dinosaurs, this delegate subscription recieves the name of the new dionsaur
 	}
-	public void nameChange(string name) //changes the name of the dinosaur that is being displayed on the screen
+	public void NameChange(string name) //changes the name of the dinosaur that is being displayed on the screen
 	{
 		dinoName.text = name; //changes the onscreen text of the dinosaur's name to the one recieved by the delegate call "sendName" from the DinoManager script.
 

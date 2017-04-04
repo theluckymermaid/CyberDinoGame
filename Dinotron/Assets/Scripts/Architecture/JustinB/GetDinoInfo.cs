@@ -83,22 +83,22 @@ public class GetDinoInfo : MonoBehaviour {
 		if (Input.GetKeyDown (upKey) == true && currentPosition - numberOfCols >= 0) {
 			currentPosition -= numberOfCols;
 			statDelegates ();
-			moveHighlightBox (upKey);
+			MoveHighlightBox (upKey);
 
 		} else if (Input.GetKeyDown (downKey) == true && currentPosition + numberOfCols < numberOfDinosaurs.Count) {
 			currentPosition += numberOfCols;
 			statDelegates ();
-			moveHighlightBox (downKey);
+			MoveHighlightBox (downKey);
 
 		} else if (Input.GetKeyDown (leftKey) == true && currentPosition - 1 >= 0) {
 			currentPosition -= 1;
 			statDelegates ();
-			moveHighlightBox (leftKey);
+			MoveHighlightBox (leftKey);
 
 		} else if (Input.GetKeyDown (rightKey) == true && currentPosition + 1 < numberOfDinosaurs.Count) {
 			currentPosition += 1;
 			statDelegates ();
-			moveHighlightBox (rightKey);
+			MoveHighlightBox (rightKey);
 		}
 	}
 	public void statDelegates()//sends out delegate calls that contain the currently selected dinosaur's stats
@@ -122,7 +122,7 @@ public class GetDinoInfo : MonoBehaviour {
 			sendName (numberOfDinosaurs [currentPosition].transform.name);
 		}
 	}
-	public void moveHighlightBox(KeyCode keyPressed) //controls the position of the highlighter box
+	public void MoveHighlightBox(KeyCode keyPressed) //controls the position of the highlighter box
 	{
 		if (keyPressed == upKey) {
 			highlightTranformer.localPosition = panels[currentPosition].transform.localPosition; //shift the position of the highlight box up one

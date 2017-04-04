@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+//A centralized class for UI scripts to always have an easy reference back to the GameCharacter they're representing.
+// There is some code that needs to be done based on every player in Start, but it also playes every child object on itself on the correct player GUI layer.
 [RequireComponent(typeof(Canvas))]
 public class DinoUI : MonoBehaviour {
 

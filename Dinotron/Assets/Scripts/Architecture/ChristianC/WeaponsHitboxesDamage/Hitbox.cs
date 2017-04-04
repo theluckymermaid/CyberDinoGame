@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 
+//Anything that takes damage from a bullet needs to have a component that is devired from this class on it.
 public abstract class Hitbox : MonoBehaviour {
 
     /// <summary>

@@ -2,6 +2,7 @@
 using System.Collections;
 using System;
 
+//This script is simply a test to see if my hitbox code was working.
 public class Destructable : Hitbox {
 
     public int hitPriority = -10;

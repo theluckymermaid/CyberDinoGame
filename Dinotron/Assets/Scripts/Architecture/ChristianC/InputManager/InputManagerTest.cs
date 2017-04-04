@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+//This class exists to register many different kinds of input to the InputManager to make sure the latter works.
+// Also serves as an example of how to use the InputManager.
 public class InputManagerTest : MonoBehaviour {
 
 	void OnEnable () {

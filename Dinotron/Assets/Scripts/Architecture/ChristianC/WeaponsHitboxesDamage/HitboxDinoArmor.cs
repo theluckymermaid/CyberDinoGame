@@ -2,6 +2,7 @@
 using System.Collections;
 using System;
 
+//Armor takes a certain amount of damage, then pops off of the main body once it is destroyed.
 [RequireComponent(typeof(Rigidbody))]
 public class HitboxDinoArmor : Hitbox {
 
@@ -43,6 +44,8 @@ public class HitboxDinoArmor : Hitbox {
 
     protected override void ResolveDamage(DamageDealer damageDealer) {
 
+        // Right now the armor piece only gets darker in color, but this should probably be replaced with more fancy code in the future.
+        // (Blend Shapes anyone?)
         health -= damageDealer.damage;
         float t = (1 - (health / maxHealth)) * 0.5f;
         material.color = Color.Lerp(startingColor, Color.black, t);

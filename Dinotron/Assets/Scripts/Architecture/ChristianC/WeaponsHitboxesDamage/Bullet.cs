@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+// All this script does is kill the bullet if it flies for too long and kill the bullet when it hits something.
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(DamageDealer))]
 public class Bullet : MonoBehaviour {

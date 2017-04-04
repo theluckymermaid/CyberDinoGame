@@ -2,6 +2,11 @@
 using UnityEngine.SceneManagement;
 using System.Collections;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
+// Every scene should have a PlayerManager object if it's going to be doing anything along the lines of spawning dinos or changing player settings.
 public class PlayerManager : MonoBehaviour {
 
     private static PlayerManager instance = null;
@@ -99,4 +104,52 @@ public class PlayerManager : MonoBehaviour {
             playerCount = Mathf.Min(4, Mathf.Max(1, playerCount));
         }
     }
+
+#if UNITY_EDITOR
+    [MenuItem("Dinotron/Set Up/Set Up\\Create PlayerManager")]
+    public static void SetupPlayerManager() {
+        PlayerManager playerManager = FindObjectOfType<PlayerManager>();
+
+        bool existingManager = playerManager != null;
+        if (existingManager) {
+            Undo.RegisterCompleteObjectUndo(playerManager.gameObject, "Set Up Player Manager");
+        } else {
+            GameObject obj = new GameObject();
+            playerManager = obj.AddComponent<PlayerManager>();
+        }
+
+        //Make the name correct.
+        playerManager.gameObject.name = "Player Manager";
+        
+        // Make sure it has a config file.
+        if (playerManager.config == null) {
+            string[] guids = AssetDatabase.FindAssets("t:" + typeof(PlayerManagerConfig).Name);
+            if (guids.Length >= 1) {
+                playerManager.config = AssetDatabase.LoadAssetAtPath<PlayerManagerConfig>(AssetDatabase.GUIDToAssetPath(guids[0]));
+            }
+        }
+
+        //Make sure it has a correct player count
+        if (existingManager) {
+            playerManager.playerCount = Mathf.Clamp(playerManager.playerCount, 1, playerManager.config.maxPlayers);
+        } else {
+            playerManager.playerCount = playerManager.config.maxPlayers;
+        }
+
+        //Make sure it has a playerDino list set up.
+        if (playerManager.playerDinos == null) {
+            playerManager.playerDinos = new GameObject[playerManager.config.maxPlayers];
+        } else if (playerManager.playerDinos.Length != playerManager.config.maxPlayers) {
+            GameObject[] newArray = new GameObject[playerManager.config.maxPlayers];
+            for (int i = 0; i < newArray.Length || i < playerManager.playerDinos.Length; i++) {
+                newArray[i] = playerManager.playerDinos[i];
+            }
+            playerManager.playerDinos = newArray;
+        }
+
+        if (!existingManager) {
+            Undo.RegisterCreatedObjectUndo(playerManager.gameObject, "Create and Set Up Player Manager");
+        }
+    }
+#endif
 }

@@ -102,16 +102,18 @@ public class GameCharacter : MonoBehaviour {
     public bool Overheated { get { return overheated; } }
 
     // Delegates for Health, Heat, and when the weapon gets fired.
-    public Action<float> HealthChangePercentage;
-    public Action<float, float> HealthChange;
-    public Action Death;
-    public static Action<GameCharacter> CharacterDeath;
+    public event Action<float> HealthChangePercentage;
+    public event Action<float, float> HealthChange;
+    public event Action Death;
+    public static event Action<GameCharacter> CharacterDeath;
 
-    public Action<float> HeatChangePercentage;
-    public Action<float, float> HeatChange;
-    public Action<bool> Overheat;
+    public event Action<float> HeatChangePercentage;
+    public event Action<float, float> HeatChange;
+    public event Action<bool> Overheat;
 
-    public Action<Weapon> WeaponFired;
+    public event Action<Weapon> WeaponFired;
+    public event Action<Weapon, int> ActiveWeaponChanged;
+    public event Action<Weapon[]> WeaponListChanged;
 
     // Update our health and notify any listeners of the changes.
     private void UpdateHealthChange() {
@@ -169,13 +171,12 @@ public class GameCharacter : MonoBehaviour {
 
     //Gun and weapon settings
     public CharacterGun gun;
-    [Tooltip("The weapon that will be equipped when the character first spawns.")]
-    public Weapon startingWeapon;
     [SerializeField]
     [Tooltip("The weapon the character is currently using.")]
     private Weapon activeWeapon = null;
     public Weapon ActiveWeapon { get { return activeWeapon; } }
     [SerializeField]
+    [Tooltip("If set, this is the weapon the character will spawn with.")]
     private Weapon defaultWeapon = null;
     public Weapon DefaultWeapon { get { return defaultWeapon; } }
     [SerializeField]
@@ -198,7 +199,7 @@ public class GameCharacter : MonoBehaviour {
     public Weapon SetDefaultWeapon(Weapon weapon) {
         // Are we setting a new default weapon?
         if (weapon != null) {
-            if (weapon != defaultWeapon) {
+            if (weapon != defaultWeapon || weaponList.Count == 0) {
                 Weapon prevDefault = defaultWeapon;
                 defaultWeapon = AddWeapon(weapon);
 
@@ -414,7 +415,7 @@ public class GameCharacter : MonoBehaviour {
     void Start() {
         UpdateHealthChange();
         UpdateHeatChange();
-        SetDefaultWeapon(startingWeapon);
+        SetDefaultWeapon(defaultWeapon);
     }
 
     // Character physics!
@@ -479,7 +480,7 @@ public class GameCharacter : MonoBehaviour {
             }
 
             if (weaponList.Count > 0 && !weaponList.Contains(defaultWeapon)) {
-                defaultWeapon = null;
+                defaultWeapon = weaponList[0];
             }
 
         } else {
@@ -491,7 +492,6 @@ public class GameCharacter : MonoBehaviour {
             maxHeat = Math.Max(0, maxHeat);
 
             activeWeapon = null;
-            defaultWeapon = null;
             weaponList.Clear();
         }
 

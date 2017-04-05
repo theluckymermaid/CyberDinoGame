@@ -45,6 +45,13 @@ public static class ScriptCopy {
         BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
 
         Type type = script.GetType();
+
+        if (type != other.GetType()) {
+            Debug.LogError("Type mismatch between the two scripts in CopyDataFrom, this operation is not supported between two scripts with a different type!"
+                + "\n Thus, nothing has happened. Double check your scripts.");
+            return;
+        }
+
         //Work our way up the heiarchy until we hit MonoBehaviour, then stop.
         while (type != typeof(MonoBehaviour)) {
             FieldInfo[] fieldInfos = type.GetFields(bindingFlags);

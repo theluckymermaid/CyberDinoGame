@@ -11,8 +11,6 @@ public class HeatBar : MonoBehaviour {
     public Image hearBarBackgroundImage;
     public Color startColor = Color.yellow;
     public Color endColor = Color.red;
-
-    private Color overlayColor;
         
     void Start() {
         heatBarImage.fillAmount = 0;

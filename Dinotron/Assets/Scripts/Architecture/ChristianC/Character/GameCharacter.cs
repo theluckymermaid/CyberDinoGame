@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 // This script holds, keeps track of, and sends delegates for a GameCharacter's vital statisics.
 // It also handles the interpretation of input.
@@ -98,15 +99,7 @@ public class GameCharacter : MonoBehaviour {
     [SerializeField]
     [HideInInspector]
     private bool overheated = false;
-    public bool Overheated
-    {
-        get { return overheated; }
-    }
-
-
-    //Gun and weapon settings
-    public CharacterGun gun;
-    public Weapon weapon;
+    public bool Overheated { get { return overheated; } }
 
     // Delegates for Health, Heat, and when the weapon gets fired.
     public Action<float> HealthChangePercentage;
@@ -174,10 +167,137 @@ public class GameCharacter : MonoBehaviour {
         }
     }
 
+    //Gun and weapon settings
+    public CharacterGun gun;
+    [SerializeField]
+    private Weapon startingWeapon;
+    public Weapon StartingWeapon { get { return startingWeapon; } }
+    [SerializeField]
+    private Weapon activeWeapon = null;
+    public Weapon ActiveWeapon { get { return activeWeapon; } }
+    [SerializeField]
+    private Weapon defaultWeapon = null;
+    public Weapon DefaultWeapon { get { return defaultWeapon; } }
+    [SerializeField]
+    private List<Weapon> weaponList = new List<Weapon>();
+    public Weapon[] Weapons { get { return weaponList.ToArray(); } }
+    private GameObject weaponsGroupObject;
+
+    public Weapon SetDefaultWeapon(Weapon weapon) {
+        if (weapon != null) {
+            if (weapon != defaultWeapon) {
+                Weapon prevDefault = defaultWeapon;
+                if (weapon.gameObject != weaponsGroupObject) {
+                    defaultWeapon = weaponsGroupObject.AddCopyOfScript(weapon);
+                    defaultWeapon.gameCharacter = this;
+                    weaponList.Add(defaultWeapon);
+                }
+
+                if (prevDefault != null) {
+                    weaponList.Remove(prevDefault);
+                    Destroy(prevDefault);
+                }
+            }
+
+            if (activeWeapon == null) {
+                SetActiveWeapon(defaultWeapon);
+            }
+        } else if (defaultWeapon != null) {
+            if (activeWeapon == defaultWeapon) {
+                SetActiveWeapon(null);
+            }
+            weaponList.Remove(defaultWeapon);
+            Destroy(defaultWeapon);
+        }
+
+        return defaultWeapon;
+    }
+
+    public Weapon AddWeapon(Weapon weapon) {
+        Weapon wpn = FindWeaponWithID(weapon.weaponID);
+        if (wpn == null) {
+            Weapon copy = weaponsGroupObject.AddCopyOfScript(weapon);
+            copy.gameCharacter = this;
+
+            weaponList.Add(copy);
+
+            return copy;
+        } else {
+            wpn.OnPickupCopy(weapon);
+            return wpn;
+        }
+    }
+
+    public void RemoveWeapon(Weapon weapon) {
+        Weapon wpn = null;
+        if (weapon.gameObject == weaponsGroupObject) {
+            wpn = weapon;
+        } else {
+            wpn = FindWeaponWithID(weapon.weaponID);
+        }
+
+        if (wpn != null && wpn != defaultWeapon) {
+            if (activeWeapon == wpn) {
+                SetActiveWeapon(defaultWeapon);
+            }
+
+            weaponList.Remove(wpn);
+            Destroy(wpn);
+        }
+    }
+
+    public Weapon AddWeaponAndSetActive(Weapon weapon) {
+        Weapon copy = AddWeapon(weapon);
+        SetActiveWeapon(copy);
+        return copy;
+    }
+
+    public Weapon FindWeaponWithID(string weaponID) {
+        return weaponList.Find(wpn => wpn.weaponID == weaponID);
+    }
+
+    public void SetActiveWeapon(Weapon weapon) {
+        Weapon wpn = null;
+        if (weapon != null) {
+            if (weapon.gameObject == weaponsGroupObject) {
+                wpn = weapon;
+            } else {
+                wpn = FindWeaponWithID(weapon.weaponID);
+            }   
+        }
+
+        foreach (Weapon w in weaponList) {
+            w.enabled = w == wpn;
+        }
+
+        activeWeapon = wpn;
+    }
+
+    public void CycleWeaponPrev() {
+        CycleWeapon(false);
+    }
+
+    public void CycleWeaponNext() {
+        CycleWeapon(true);
+    }
+
+    private void CycleWeapon(bool next) {
+        int index = weaponList.IndexOf(activeWeapon);
+        index = (index + ((next) ? 1 : -1)) % weaponList.Count;
+        SetActiveWeapon(weaponList[index]);
+    }
+
+    // Intialization logic
+    void Awake() {
+        weaponsGroupObject = new GameObject("Weapons");
+        weaponsGroupObject.transform.parent = this.transform;
+    }
+        
     // Make sure we're all good to go!
     void Start() {
         UpdateHealthChange();
         UpdateHeatChange();
+        SetDefaultWeapon(startingWeapon);
     }
 
     // Character physics!
@@ -203,17 +323,17 @@ public class GameCharacter : MonoBehaviour {
     }
 
     protected virtual void UpdateWeapon() {
-        if (gun != null && weapon != null && weapon.isActiveAndEnabled) {
+        if (gun != null && activeWeapon != null && activeWeapon.isActiveAndEnabled) {
             float heatChange;
             bool weaponFired;
             //We can't shoot if we're overheated!
             bool firing = (Overheated) ? false : fireInput;
-            weapon.UpdateState(firing, gun.bulletSpawnPoints, out heatChange, out weaponFired);
+            activeWeapon.UpdateState(firing, gun.bulletSpawnPoints, out heatChange, out weaponFired);
             CurrentHeat += heatChange;
 
             if (weaponFired && WeaponFired != null) {
                 // This delegate is only to be fired when the character actually shoots something, not for every frame the fire input is held down.
-                WeaponFired(weapon);
+                WeaponFired(activeWeapon);
             }
         }
     }
@@ -225,7 +345,6 @@ public class GameCharacter : MonoBehaviour {
             CurrentHeat -= heatCooldownPerSecond * Time.deltaTime;
         }
     }
-
     
     void OnValidate() {
 
@@ -237,6 +356,15 @@ public class GameCharacter : MonoBehaviour {
             // Code that happens during play.
             CurrentHealth = currentHealth;
             CurrentHeat = currentHeat;
+
+            if (weaponList.Count > 0 && !weaponList.Contains(activeWeapon)) {
+                activeWeapon = null;
+            }
+
+            if (weaponList.Count > 0 && !weaponList.Contains(defaultWeapon)) {
+                defaultWeapon = null;
+            }
+
         } else {
             // Code that happens when not in play.
             maxHealth = Mathf.Max(0, maxHealth);
@@ -244,6 +372,10 @@ public class GameCharacter : MonoBehaviour {
 
             currentHeat = 0;
             maxHeat = Math.Max(0, maxHeat);
+
+            activeWeapon = null;
+            defaultWeapon = null;
+            weaponList.Clear();
         }
 
         heatCooldownPerSecond = Mathf.Max(0, heatCooldownPerSecond);
@@ -260,6 +392,15 @@ public class GameCharacter : MonoBehaviour {
             GUILayout.Label("Health: " + currentHealth + "/" + maxHealth);
             GUILayout.Label("Heat: " + currentHeat + "/" + maxHeat);
             GUILayout.Label("Overheated: " + overheated);
+            GUILayout.Label("Active Weapon: " + activeWeapon.weaponName + ((activeWeapon.usesAmmo) ? " (" + activeWeapon.currentAmmo + "/" + activeWeapon.maxAmmo + ")" : ""));
+            GUILayout.Label("Weapons");
+            foreach (Weapon weapon in weaponList) {
+                if (activeWeapon == weapon) {
+                    GUILayout.Label("[" + weapon.weaponName + "]" + ((weapon.usesAmmo) ? " (" + weapon.currentAmmo + "/" + weapon.maxAmmo + ")" : ""));
+                } else {
+                    GUILayout.Label(weapon.weaponName + ((weapon.usesAmmo) ? " (" + weapon.currentAmmo + "/" + weapon.maxAmmo + ")" : ""));
+                }
+            }
         }
     }
 #endif

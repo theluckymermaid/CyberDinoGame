@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //A simple automatic fire weapon. Should cover a lot of use cases of what's needed for things, but I'm leaving other kinds of weapons to be implemented by the Weapons team itself.
-public class SimpleWeapon : Weapon {
+public class AutomaticWeapon : Weapon {
+    // What is this weapon firing?
+    public GameObject projectilePrefab;
     // How many seconds to wait before firing the next bullet. For 10 bullets a second, set this to 0.1.
     public float fireDelay;
     // What is the heat cost of firing a single bullet?
@@ -37,6 +39,14 @@ public class SimpleWeapon : Weapon {
 
             //Keep track of when we last fired.
             lastFiredTime = Time.time;
+
+            if (usesAmmo) {
+                currentAmmo = Mathf.Max(currentAmmo - 1, 0);
+
+                if (currentAmmo == 0) {
+                    gameCharacter.RemoveWeapon(this);
+                }
+            }
 
             //Set return variables
             weaponFired = true;

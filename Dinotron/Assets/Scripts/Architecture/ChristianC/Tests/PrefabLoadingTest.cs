@@ -24,8 +24,8 @@ public class PrefabLoadingTest : MonoBehaviour {
             GUILayout.Label(gameCharacter.MaxHealth.ToString());
             GUILayout.Label(gameCharacter.MaxHeat.ToString());
             GUILayout.Label(gameCharacter.speed.ToString());
-            GUILayout.Label(gameCharacter.weapon.damage.ToString());
-            GUILayout.Label((gameCharacter.weapon as SimpleWeapon).fireDelay.ToString());
+            GUILayout.Label(gameCharacter.ActiveWeapon.damage.ToString());
+            GUILayout.Label((gameCharacter.ActiveWeapon as AutomaticWeapon).fireDelay.ToString());
         }
         GUILayout.EndVertical();
     }

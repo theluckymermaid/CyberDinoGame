@@ -214,6 +214,10 @@ public class GameCharacter : MonoBehaviour {
                     
                     prevDefault.enabled = false;
                     removedWeaponList.Add(prevDefault);
+
+                    if (WeaponListChanged != null) {
+                        WeaponListChanged(weaponList.ToArray());
+                    }
                 }
             }
         // If this function was called with null, then remove the default weapon.
@@ -228,6 +232,10 @@ public class GameCharacter : MonoBehaviour {
             
             defaultWeapon.enabled = false;
             removedWeaponList.Add(defaultWeapon);
+
+            if (WeaponListChanged != null) {
+                WeaponListChanged(weaponList.ToArray());
+            }
         }
 
         return defaultWeapon;
@@ -256,6 +264,9 @@ public class GameCharacter : MonoBehaviour {
             wpn.gameCharacter = this;
             // and put it in our weapon list.
             weaponList.Add(wpn);
+            if (WeaponListChanged != null) {
+                WeaponListChanged(weaponList.ToArray());
+            }
 
             // If didn't have an active weapon before, we now have one.
             if (activeWeapon == null) {
@@ -302,6 +313,10 @@ public class GameCharacter : MonoBehaviour {
             
             wpn.enabled = false;
             removedWeaponList.Add(wpn);
+
+            if (WeaponListChanged != null) {
+                WeaponListChanged(weaponList.ToArray());
+            }
         }
     }
 
@@ -365,13 +380,29 @@ public class GameCharacter : MonoBehaviour {
                     }
 
                     activeWeapon = wpn;
+
+                    if (ActiveWeaponChanged != null) {
+                        ActiveWeaponChanged(activeWeapon, weaponList.IndexOf(activeWeapon));
+                    }
                 }
             }
         } else {
-            // We are resetting the active weapon.
-            // If default weapon is null, then all weapons are disabled.
-            activeWeapon = defaultWeapon;
-            weaponList.ForEach(w => w.enabled = w == defaultWeapon);
+            //Only do something if the weapon is actually being changed.
+            if (activeWeapon != defaultWeapon) {
+                // Update our active weapon one last time before switching away from it.
+                // This stops shenanigans such as charging a weapon and then storing that charge by swtiching away from it.
+                // Perhaps this would be better with special code for that case, but the a "ChargingWeapon" class doesn't exist when I'm writing this!
+                UpdateWeapon(false);
+
+                // We are resetting the active weapon.
+                // If default weapon is null, then all weapons are disabled.
+                weaponList.ForEach(w => w.enabled = w == defaultWeapon);
+                activeWeapon = defaultWeapon;
+
+                if (ActiveWeaponChanged != null) {
+                    ActiveWeaponChanged(activeWeapon, weaponList.IndexOf(activeWeapon));
+                }
+            }
         }
     }
 

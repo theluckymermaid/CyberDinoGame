@@ -3,6 +3,20 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
+// Use this class statically to subscribe to Input events once per Update().
+// use:
+// inside OnEnable()
+//      InputManager.AddAxisDelegate(string nameOfAxisInTheProjectSettings, function that takes a float);
+//      InputManager.AddAxis2DDelegate(string horzAxis, string vertAxis, function that takes two floats);
+//      InputManager.AddButtonDelegate(string nameOfButtonInTheProjectSettings, function that takes a ButtonState object);
+// inside OnDisable()
+//      InputManager.RemoveAxisDelegate(string nameOfAxisInTheProjectSettings, function that takes a float);
+//      InputManager.RemoveAxis2DDelegate(string horzAxis, string vertAxis, function that takes two floats);
+//      InputManager.RemoveButtonDelegate(string nameOfButtonInTheProjectSettings, function that takes a ButtonState object);
+//
+// There is also an advanced usage with AddButtonDelegate(string axisName, float axisThreshold, funtion that takes a ButtonState object)
+// This allows you to register an axis and recieve button events for it when it passes the axisThreshold. Set the threshold to a negative value to read the axis going in the other direction.
+// In fact this is how all buttons work, inside this script. The first funcion signature just uses a default axisTolerance settings.
 public class InputManager : MonoBehaviour {
 
     public delegate void AxisDelegate(float value);
@@ -11,6 +25,7 @@ public class InputManager : MonoBehaviour {
 
     const float DEFAULT_AXIS_AS_BUTTON_TRESHOLD = 0.95f;
 
+    //Due to the lack of the Tuple data type, we must use our own data types tha store all the data we need inside of the dictionaries.
     private class Axis2DDelegateKey {
         public readonly string inputHorizontal;
         public readonly string inputVertical;
@@ -74,6 +89,7 @@ public class InputManager : MonoBehaviour {
     private static InputManager instance;
     private bool isInstance = false;
 
+    // Use lazy initalization, but only when the application is not qutting suddenly.
     private static void InstantiateInstance() {
         if (isApplicationQuitting)
             return;
@@ -263,6 +279,7 @@ public class InputManager : MonoBehaviour {
         // End Update
     }
 
+    //Show all inputs that are registered and their values.
 #if UNITY_EDITOR
     public bool showDebugInfo = false;
     private Vector2 scrollPosition;

@@ -61,6 +61,7 @@ public class DamageDealer : MonoBehaviour {
         prevPosition = tr.position;
     }
 
+    // Pass all trigger and collision events to the OnCollide code, fetching the collision point if we can get it.
     protected void OnTriggerEnter(Collider collider) {
         OnCollide(collider);
     }
@@ -111,6 +112,7 @@ public class DamageDealer : MonoBehaviour {
                 }
             }
 
+            // Make sure we start the post fixed update coroutine if it's not already running.
             if (coroutineResolveDamage == null) {
                 coroutineResolveDamage = StartCoroutine(ResolveDamage());
             }
@@ -145,10 +147,12 @@ public class DamageDealer : MonoBehaviour {
             }
         }
 
+        //Have the hitbox take damage from us.
         if (bestEntry != null) {
             bestEntry.hitbox.TakeDamage(this);
         }
 
+        //Clear out the coroutine tracking variable.
         coroutineResolveDamage = null;
     }
 }

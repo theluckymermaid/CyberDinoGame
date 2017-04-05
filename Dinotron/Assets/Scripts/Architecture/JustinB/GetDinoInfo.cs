@@ -7,7 +7,7 @@ public class GetDinoInfo : MonoBehaviour {
 	//This helps to reduce memory usage because the getComponent method is very system taxing.
 	public List<GameObject> numberOfDinosaurs = new List<GameObject>();
 	public List<GameCharacter> dinoStatistics = new List<GameCharacter>();
-	public List<SimpleWeapon> dinoWeapons = new List<SimpleWeapon>();
+	public List<AutomaticWeapon> dinoWeapons = new List<AutomaticWeapon>();
 	private List<string> dinoNames = new List<string> ();
 	public List<GameObject> panels = new List<GameObject> ();
 
@@ -49,7 +49,7 @@ public class GetDinoInfo : MonoBehaviour {
 		for (int i = 0; i < numberOfDinosaurs.Count; i++) {
 			//adds statistics to each list based on the number of dinosaur prefabs entered into the numberOfDinosaurs list
 			dinoStatistics.Add(numberOfDinosaurs [i].GetComponent<GameCharacter> ());
-			dinoWeapons.Add(numberOfDinosaurs [i].GetComponentInChildren<SimpleWeapon>());
+			dinoWeapons.Add(numberOfDinosaurs [i].GetComponentInChildren<AutomaticWeapon>());
 			dinoNames.Add (numberOfDinosaurs [i].transform.name);
 		}
 		//attaches highlightTransformer to the RectTransform of the selected object (in this case the highlight box object)

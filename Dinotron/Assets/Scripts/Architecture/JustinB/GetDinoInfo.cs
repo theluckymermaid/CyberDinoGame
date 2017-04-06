@@ -50,8 +50,12 @@ public class GetDinoInfo : MonoBehaviour {
 			dinoWeapons.Add(dinoStatistics[i].DefaultWeapon as AutomaticWeapon);
 			dinoNames.Add (numberOfDinosaurs [i].transform.name);
 		}
-		//attaches highlightTransformer to the RectTransform of the selected object (in this case the highlight box object)
-		highlightTranformer = highlightbox.GetComponent<RectTransform> ();
+
+        //Initalize starting dino.
+        PlayerManager.PlayerDinos[(int)player] = numberOfDinosaurs[currentPosition];
+
+        //attaches highlightTransformer to the RectTransform of the selected object (in this case the highlight box object)
+        highlightTranformer = highlightbox.GetComponent<RectTransform> ();
 		highlightPosition = highlightTranformer.position;
 		if (sendHealth != null) {
 			sendHealth (dinoStatistics [currentPosition].MaxHealth);
@@ -134,6 +138,8 @@ public class GetDinoInfo : MonoBehaviour {
 			statDelegates ();
 			MoveHighlightBox (dir);
 		}
+
+        PlayerManager.PlayerDinos[(int)player] = numberOfDinosaurs[currentPosition];
 	}
 	public void statDelegates()//sends out delegate calls that contain the currently selected dinosaur's stats
 	{

@@ -32,7 +32,7 @@ public class SliderManager : MonoBehaviour {
 		}
 		if (stat == statCode.ROF) {
 			delegateSource.sendROF += ChangeStat;
-			mySlider.value = delegateSource.dinoWeapons [0].fireDelay;
+			mySlider.value = mySlider.maxValue - delegateSource.dinoWeapons [0].fireDelay;
 		}
 
 	}

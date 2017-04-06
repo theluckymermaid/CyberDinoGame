@@ -38,6 +38,10 @@ public class SliderManager : MonoBehaviour {
 	}
 	public void ChangeStat(float value) //overloaded method that changes the stat for the slider if the stat it's listening for is an int
 	{																  //PlayerNumber is a enum type from DinoManager
+		if (stat == statCode.ROF) {
+			mySlider.value = mySlider.maxValue - value;
+		} else {
 			mySlider.value = value;
+		}
 	}
 }

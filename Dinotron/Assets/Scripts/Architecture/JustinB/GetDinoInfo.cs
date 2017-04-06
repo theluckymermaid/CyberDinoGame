@@ -11,15 +11,13 @@ public class GetDinoInfo : MonoBehaviour {
 	private List<string> dinoNames = new List<string> ();
 	public List<GameObject> panels = new List<GameObject> ();
 
+	public enum playerNumber{Player1,Player2,Player3,Player4};
+	[SerializeField]
+	private playerNumber player;
+	[SerializeField]
+	private PlayerInputConfig inputConfig;
 	//Key Codes for controlling the script
-	[SerializeField]
-	private KeyCode upKey;
-	[SerializeField]
-	private KeyCode downKey;
-	[SerializeField]
-	private KeyCode leftKey;
-	[SerializeField]
-	private KeyCode rightKey;
+	public enum SelectDirection {Up, Down, Left, Right};
 
 	//delegates that send out the information from the selected dinosaur
 	public delegate void sendStrings (string dinoName);
@@ -49,7 +47,7 @@ public class GetDinoInfo : MonoBehaviour {
 		for (int i = 0; i < numberOfDinosaurs.Count; i++) {
 			//adds statistics to each list based on the number of dinosaur prefabs entered into the numberOfDinosaurs list
 			dinoStatistics.Add(numberOfDinosaurs [i].GetComponent<GameCharacter> ());
-			dinoWeapons.Add(numberOfDinosaurs [i].GetComponentInChildren<AutomaticWeapon>());
+			dinoWeapons.Add(dinoStatistics[i].DefaultWeapon as AutomaticWeapon);
 			dinoNames.Add (numberOfDinosaurs [i].transform.name);
 		}
 		//attaches highlightTransformer to the RectTransform of the selected object (in this case the highlight box object)
@@ -74,31 +72,67 @@ public class GetDinoInfo : MonoBehaviour {
 			sendName (numberOfDinosaurs [currentPosition].transform.name);
 		}
 	}
-	void Update(){
-		Selection ();
+
+	void OnEnable() {
+		InputManager.AddButtonDelegate (inputConfig.moveVerticalInput, 0.8f, SelectionUp);
+		InputManager.AddButtonDelegate (inputConfig.moveVerticalInput, -0.8f, SelectionDown);
+		InputManager.AddButtonDelegate (inputConfig.moveHorizontalInput, -0.8f, SelectionLeft);
+		InputManager.AddButtonDelegate (inputConfig.moveHorizontalInput, 0.8f, SelectionRight);
 	}
 
-	public void Selection () //changes the currently selected dinosaur based on user input
+	void OnDisable() {
+		InputManager.RemoveButtonDelegate (inputConfig.moveVerticalInput, 0.8f, SelectionUp);
+		InputManager.RemoveButtonDelegate (inputConfig.moveVerticalInput, -0.8f, SelectionDown);
+		InputManager.RemoveButtonDelegate (inputConfig.moveHorizontalInput, -0.8f, SelectionLeft);
+		InputManager.RemoveButtonDelegate (inputConfig.moveHorizontalInput, 0.8f, SelectionRight);
+	}
+
+	public void SelectionUp(ButtonState button) {
+		if (button.Pressed) {
+			Selection (SelectDirection.Up);
+		}
+	}
+
+	public void SelectionDown(ButtonState button) {
+		if (button.Pressed) {
+			Selection (SelectDirection.Down);
+		}
+	}
+
+	public void SelectionLeft(ButtonState button) {
+		if (button.Pressed) {
+			Selection (SelectDirection.Left);
+		}
+	}
+
+	public void SelectionRight(ButtonState button) {
+		if (button.Pressed) {
+			Selection (SelectDirection.Right);
+		}
+	}
+
+
+	public void Selection (SelectDirection dir) //changes the currently selected dinosaur based on user input
 	{
-		if (Input.GetKeyDown (upKey) == true && currentPosition - numberOfCols >= 0) {
+		
+		if (dir == SelectDirection.Up && currentPosition - numberOfCols >= 0) {
 			currentPosition -= numberOfCols;
 			statDelegates ();
-			MoveHighlightBox (upKey);
-
-		} else if (Input.GetKeyDown (downKey) == true && currentPosition + numberOfCols < numberOfDinosaurs.Count) {
+			MoveHighlightBox (dir);
+		} else if (dir == SelectDirection.Down && currentPosition + numberOfCols < numberOfDinosaurs.Count) {
 			currentPosition += numberOfCols;
 			statDelegates ();
-			MoveHighlightBox (downKey);
+			MoveHighlightBox (dir);
 
-		} else if (Input.GetKeyDown (leftKey) == true && currentPosition - 1 >= 0) {
+		} else if (dir == SelectDirection.Left && currentPosition - 1 >= 0) {
 			currentPosition -= 1;
 			statDelegates ();
-			MoveHighlightBox (leftKey);
+			MoveHighlightBox (dir);
 
-		} else if (Input.GetKeyDown (rightKey) == true && currentPosition + 1 < numberOfDinosaurs.Count) {
+		} else if (dir == SelectDirection.Right && currentPosition + 1 < numberOfDinosaurs.Count) {
 			currentPosition += 1;
 			statDelegates ();
-			MoveHighlightBox (rightKey);
+			MoveHighlightBox (dir);
 		}
 	}
 	public void statDelegates()//sends out delegate calls that contain the currently selected dinosaur's stats
@@ -122,15 +156,15 @@ public class GetDinoInfo : MonoBehaviour {
 			sendName (numberOfDinosaurs [currentPosition].transform.name);
 		}
 	}
-	public void MoveHighlightBox(KeyCode keyPressed) //controls the position of the highlighter box
+	public void MoveHighlightBox(SelectDirection dir) //controls the position of the highlighter box
 	{
-		if (keyPressed == upKey) {
+		if (dir == SelectDirection.Up) {
 			highlightTranformer.localPosition = panels[currentPosition].transform.localPosition; //shift the position of the highlight box up one
-		} else if (keyPressed == downKey) {
+		} else if (dir == SelectDirection.Down) {
 			highlightTranformer.localPosition = panels [currentPosition].transform.localPosition;
-		} else if (keyPressed == leftKey) {
+		} else if (dir == SelectDirection.Left) {
 			highlightTranformer.localPosition = panels [currentPosition].transform.localPosition;
-		} else if (keyPressed == rightKey) {
+		} else if (dir == SelectDirection.Right) {
 			highlightTranformer.localPosition = panels [currentPosition].transform.localPosition;
 		}
 

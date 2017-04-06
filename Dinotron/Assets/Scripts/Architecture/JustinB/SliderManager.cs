@@ -32,12 +32,16 @@ public class SliderManager : MonoBehaviour {
 		}
 		if (stat == statCode.ROF) {
 			delegateSource.sendROF += ChangeStat;
-			mySlider.value = delegateSource.dinoWeapons [0].fireDelay;
+			mySlider.value = mySlider.maxValue - delegateSource.dinoWeapons [0].fireDelay;
 		}
 
 	}
 	public void ChangeStat(float value) //overloaded method that changes the stat for the slider if the stat it's listening for is an int
 	{																  //PlayerNumber is a enum type from DinoManager
+		if (stat == statCode.ROF) {
+			mySlider.value = mySlider.maxValue - value;
+		} else {
 			mySlider.value = value;
+		}
 	}
 }

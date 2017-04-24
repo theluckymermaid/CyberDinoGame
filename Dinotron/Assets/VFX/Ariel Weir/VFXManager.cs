@@ -8,20 +8,20 @@ public class VFXManager : MonoBehaviour {
 	//componenets to the field in the VFX manager game object. 
 
 	public ManagerHealth playerHealth; 
+	public SoundManager shieldSound; 
 	public GameObject damageSparks; 
 	public GameObject shield;
 	public GameObject healVFX;
 	public Collider playerOrEnemy; 
-	//private ParticleSystem shieldVFX; 
-	public bool smokeNotNPlay;  
+	//private ParticleSystem shieldVFX;  
 	public bool shieldIsUp;
 
 
 	// Use this for initialization
 	void Start () {
 		playerHealth = FindObjectOfType<ManagerHealth> ();
+		shieldSound = FindObjectOfType <SoundManager> (); 
 		//damage = GetComponent<ParticleSystem> ();
-		smokeNotNPlay = true; 
 		shieldIsUp = false; 
 		damageSparks.SetActive (false);
 		shield.SetActive (false);
@@ -35,21 +35,17 @@ public class VFXManager : MonoBehaviour {
 	}
 	// Starts the damageSparks vfx once player starts taking physical damage
 	public void StartDamageVFX () {
-		if (playerHealth.currentHealth <= 19f && smokeNotNPlay == true) { 
 			damageSparks.SetActive (true);
-			//Instantiate (damageSparks, playerHealth.transform.position, playerHealth.transform.rotation); 
-			smokeNotNPlay = false; 
-		}
 	}
 	// Stops once the player 
 	public void StopDamageVFX() {
 			damageSparks.SetActive(false);
-			smokeNotNPlay = true;
 	}
 	// Does the co-routine of ShieldsUpCo so once the sheild is activated, you have to wait 11 seconds until you are able to use it again. 
 	public void ShieldsUp(){
 		if (Input.GetKeyDown (KeyCode.S) && shieldIsUp == false) {
 			StartCoroutine("ShieldsUpCo");
+			shieldSound.ShieldSound (); 
 		}
 	}
 	// Shield becomes active, player's collider will be turned off. After 11 seconds, the shield will be off, and players collider will be turned on. 

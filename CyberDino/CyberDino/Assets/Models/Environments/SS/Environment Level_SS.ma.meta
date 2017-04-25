@@ -1,4 +1,5 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 guid: fd044ba48be0d734590132bd2879de4c
 timeCreated: 1493146203
 licenseType: Free
@@ -3096,6 +3097,14 @@ ModelImporter:
     4301020: relic:pSphere1
     7400000: Take 001
     9500000: //RootNode
+=======
+guid: 7b825ab4286e5a144a14b9f7e0178deb
+timeCreated: 1493149866
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName: {}
+>>>>>>> 54a882fa7339fa8569396d6ee80ff1600e433941
   materials:
     importMaterials: 1
     materialName: 0

@@ -1,4 +1,5 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 guid: 4eec9b850a33fed4ba5766dcee649d4b
 timeCreated: 1493146187
 licenseType: Free
@@ -2159,6 +2160,14 @@ ModelImporter:
     4300678: Crater1
     7400000: Take 001
     9500000: //RootNode
+=======
+guid: c66fae59108c5e044ba5072405c7994f
+timeCreated: 1493149866
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName: {}
+>>>>>>> 54a882fa7339fa8569396d6ee80ff1600e433941
   materials:
     importMaterials: 1
     materialName: 0

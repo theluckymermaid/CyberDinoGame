@@ -1,8 +1,14 @@
 fileFormatVersion: 2
 <<<<<<< HEAD
+<<<<<<< HEAD
 guid: 4eec9b850a33fed4ba5766dcee649d4b
 timeCreated: 1493146187
 licenseType: Free
+=======
+guid: d693dc298bad48442aba290acc184430
+timeCreated: 1493147648
+licenseType: Pro
+>>>>>>> 042a072da0dd261853f4683716979f2c98bc50fa
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
@@ -2160,6 +2166,7 @@ ModelImporter:
     4300678: Crater1
     7400000: Take 001
     9500000: //RootNode
+<<<<<<< HEAD
 =======
 guid: c66fae59108c5e044ba5072405c7994f
 timeCreated: 1493149866
@@ -2168,6 +2175,8 @@ ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName: {}
 >>>>>>> 54a882fa7339fa8569396d6ee80ff1600e433941
+=======
+>>>>>>> 042a072da0dd261853f4683716979f2c98bc50fa
   materials:
     importMaterials: 1
     materialName: 0

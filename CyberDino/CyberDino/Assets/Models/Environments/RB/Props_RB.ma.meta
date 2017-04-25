@@ -1,8 +1,14 @@
 fileFormatVersion: 2
 <<<<<<< HEAD
+<<<<<<< HEAD
 guid: d01d8c10a68627247a7c848b3d0dc181
 timeCreated: 1493146190
 licenseType: Free
+=======
+guid: 99557c289dd809245a160ae3ac1baf11
+timeCreated: 1493147634
+licenseType: Pro
+>>>>>>> 042a072da0dd261853f4683716979f2c98bc50fa
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
@@ -253,6 +259,7 @@ ModelImporter:
     4300088: pCylinder5
     7400000: Take 001
     9500000: //RootNode
+<<<<<<< HEAD
 =======
 guid: cf760d0a414dfa441a87564b9d43bbf4
 timeCreated: 1493149866
@@ -261,6 +268,8 @@ ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName: {}
 >>>>>>> 54a882fa7339fa8569396d6ee80ff1600e433941
+=======
+>>>>>>> 042a072da0dd261853f4683716979f2c98bc50fa
   materials:
     importMaterials: 1
     materialName: 0

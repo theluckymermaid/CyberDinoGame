@@ -1,8 +1,14 @@
 fileFormatVersion: 2
 <<<<<<< HEAD
+<<<<<<< HEAD
 guid: fd044ba48be0d734590132bd2879de4c
 timeCreated: 1493146203
 licenseType: Free
+=======
+guid: 7b4ddb611f2fdd643b8a33036fdb0144
+timeCreated: 1493147631
+licenseType: Pro
+>>>>>>> 042a072da0dd261853f4683716979f2c98bc50fa
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
@@ -3097,6 +3103,7 @@ ModelImporter:
     4301020: relic:pSphere1
     7400000: Take 001
     9500000: //RootNode
+<<<<<<< HEAD
 =======
 guid: 7b825ab4286e5a144a14b9f7e0178deb
 timeCreated: 1493149866
@@ -3105,6 +3112,8 @@ ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName: {}
 >>>>>>> 54a882fa7339fa8569396d6ee80ff1600e433941
+=======
+>>>>>>> 042a072da0dd261853f4683716979f2c98bc50fa
   materials:
     importMaterials: 1
     materialName: 0

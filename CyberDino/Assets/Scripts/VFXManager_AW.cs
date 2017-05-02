@@ -7,8 +7,8 @@ public class VFXManager_AW : MonoBehaviour {
 	// As for the game object shield damagesparks, heal vfx,  those particle prefabs should be parented underneath the player. and then drag those
 	//componenets to the field in the VFX manager game object. 
 
-	public ManagerHealth playerHealth; 
-	public SoundManager shieldSound; 
+	public ManagerHealth_AW playerHealth; 
+	public SoundManager_AW shieldSound; 
 	public GameObject damageSparks; 
 	public GameObject shield;
 	public GameObject healVFX;
@@ -19,8 +19,8 @@ public class VFXManager_AW : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		playerHealth = FindObjectOfType<ManagerHealth> ();
-		shieldSound = FindObjectOfType <SoundManager> (); 
+		playerHealth = FindObjectOfType<ManagerHealth_AW> ();
+		shieldSound = FindObjectOfType <SoundManager_AW> (); 
 		//damage = GetComponent<ParticleSystem> ();
 		shieldIsUp = false; 
 		damageSparks.SetActive (false);

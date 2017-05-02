@@ -5,17 +5,17 @@ using System.Collections;
 public class PickUps_AW : MonoBehaviour {
 	// Put this Script of the Health Pick Up Item 
 	//put the player in this field
-	public ManagerHealth playerHealth;
+	public ManagerHealth_AW playerHealth;
 	// Put the healthpack in this field
 	public Collider healthPickup; 
 	public GameObject health; 
-	public VFXManager healthFX; 
-	public SoundManager healthSound; 
+	public VFXManager_AW healthFX; 
+	public SoundManager_AW healthSound; 
 
 	void Start () {
-		playerHealth = FindObjectOfType<ManagerHealth> ();
-		healthFX = FindObjectOfType<VFXManager> (); 
-		healthSound = FindObjectOfType<SoundManager> (); 
+		playerHealth = FindObjectOfType<ManagerHealth_AW> ();
+		healthFX = FindObjectOfType<VFXManager_AW> (); 
+		healthSound = FindObjectOfType<SoundManager_AW> (); 
 	}
 
 	void OnTriggerEnter (Collider other) {

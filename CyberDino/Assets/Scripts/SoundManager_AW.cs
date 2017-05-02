@@ -6,12 +6,12 @@ public class SoundManager_AW : MonoBehaviour {
 	public GameObject shieldActivateSound; 
 	public GameObject shieldDeactivatedSound; 
 	public GameObject damageSparkSound; 
-	public ManagerHealth playerHealth;  
+	public ManagerHealth_AW playerHealth;  
 	public GameObject shootingSound; 
 
 	// Use this for initialization
 	void Start () {
-		playerHealth = FindObjectOfType<ManagerHealth> ();
+		playerHealth = FindObjectOfType<ManagerHealth_AW> ();
 		healingSound.SetActive (false); 
 		shieldActivateSound.SetActive (false); 
 		shieldDeactivatedSound.SetActive (false); 

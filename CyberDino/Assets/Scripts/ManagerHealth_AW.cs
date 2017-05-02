@@ -6,9 +6,9 @@ public class ManagerHealth_AW : MonoBehaviour {
 	public float maxHealth = 20f;
 	public float currentHealth = 20f;
 	public GameObject healthBar; 
-	public VFXManager damageSpark;
-	public SoundManager damageSparkSound;
-	public HealthDrop health;
+	public VFXManager_AW damageSpark;
+	public SoundManager_AW damageSparkSound;
+	public HealthDrop_AW health;
 	public GameObject enemyOrPlayer;  
 
 	void Start () 

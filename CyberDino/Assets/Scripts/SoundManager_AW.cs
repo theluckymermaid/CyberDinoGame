@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class SoundManager : MonoBehaviour {
+public class SoundManager_AW : MonoBehaviour {
 	public GameObject healingSound; 
 	public GameObject shieldActivateSound; 
 	public GameObject shieldDeactivatedSound; 

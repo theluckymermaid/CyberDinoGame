@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ManagerHealth : MonoBehaviour {
+public class ManagerHealth_AW : MonoBehaviour {
 	// Put this script of the Player/ Enemy 
 	public float maxHealth = 20f;
 	public float currentHealth = 20f;

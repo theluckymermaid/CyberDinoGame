@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class HealthDrop : MonoBehaviour {
+public class HealthDrop_AW : MonoBehaviour {
 	//public ManagerHealth playerHealth; 
 	public GameObject healthDrop; 
 	public Rigidbody healthDropRB; 

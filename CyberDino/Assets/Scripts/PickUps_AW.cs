@@ -2,7 +2,7 @@
 using System.Collections;
 
 
-public class PickUps : MonoBehaviour {
+public class PickUps_AW : MonoBehaviour {
 	// Put this Script of the Health Pick Up Item 
 	//put the player in this field
 	public ManagerHealth playerHealth;

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class VFXManager : MonoBehaviour {
+public class VFXManager_AW : MonoBehaviour {
 	// Create an Empty Game Object and name if VFX Manager. Then attach This Script to the VFX Manager. This script will handles all VFX (*Hopefulle*)
 	// but as of right now, the VFX manager script handles the Damage VFX.
 	// As for the game object shield damagesparks, heal vfx,  those particle prefabs should be parented underneath the player. and then drag those
